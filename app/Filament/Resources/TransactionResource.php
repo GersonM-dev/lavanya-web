@@ -33,7 +33,6 @@ class TransactionResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('customer.grooms_name')
                             ->label('Nama Pengantin Pria')
-                            ->default(fn($record) => $record?->customer?->grooms_name)
                             ->required(),
 
                         Forms\Components\TextInput::make('customer.brides_name')
@@ -567,19 +566,25 @@ class TransactionResource extends Resource
         return $data;
     }
 
-    protected static ?string $recordTitleAttribute = 'customer.grooms_name';
+    // protected static ?string $recordTitleAttribute = 'customer.grooms_name';
 
-    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    // public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    // {
+    //     return $record->customer?->grooms_name . ' & ' . $record->customer?->brides_name;
+    // }
+
+    // public static function getGlobalSearchResultDetails(Model $record): array
+    // {
+    //     return [
+    //         'Venue' => $record->venue?->nama,
+    //         'Wedding Date' => $record->customer?->wedding_date,
+    //         'Estimated Price' => number_format($record->total_estimated_price, 0, ',', '.'),
+    //     ];
+    // }
+
+    public static function getEloquentQuery(): Builder
     {
-        return $record->customer?->grooms_name . ' & ' . $record->customer?->brides_name;
+        return parent::getEloquentQuery()->with(['customer', 'venue', 'discounts']);
     }
 
-    public static function getGlobalSearchResultDetails(Model $record): array
-    {
-        return [
-            'Venue' => $record->venue?->nama,
-            'Wedding Date' => $record->customer?->wedding_date,
-            'Estimated Price' => number_format($record->total_estimated_price, 0, ',', '.'),
-        ];
-    }
 }
