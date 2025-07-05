@@ -29,8 +29,47 @@ class TransactionResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('Customer Info')
-                    ->description('Masukkan informasi pelanggan di bawah ini')
+                    ->description('Informasi pelanggan di bawah ini')
                     ->schema([
+                        Forms\Components\Select::make('customer_id')
+                            ->label('Pelanggan')
+                            ->options(\App\Models\Customer::all()->pluck('grooms_name', 'id'))
+                            ->searchable()
+                            ->hidden()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                $customer = \App\Models\Customer::find($state);
+                                if ($customer) {
+                                    $set('customer.grooms_name', $customer->grooms_name);
+                                    $set('customer.brides_name', $customer->brides_name);
+                                    $set('customer.phone_number', $customer->phone_number);
+                                    $set('customer.refferal_code', $customer->refferal_code ?? null);
+                                    $set('customer.guest_count', $customer->guest_count ?? null);
+                                    $set('customer.wedding_date', $customer->wedding_date ?? null);
+                                } else {
+                                    $set('customer.grooms_name', null);
+                                    $set('customer.brides_name', null);
+                                    $set('customer.phone_number', null);
+                                    $set('customer.refferal_code', null);
+                                    $set('customer.guest_count', null);
+                                    $set('customer.wedding_date', null);
+                                }
+                            })
+                            ->afterStateHydrated(function ($state, callable $set) {
+                                if (!$state) {
+                                    return;
+                                }
+                                $customer = \App\Models\Customer::find($state);
+                                if ($customer) {
+                                    $set('customer.grooms_name', $customer->grooms_name);
+                                    $set('customer.brides_name', $customer->brides_name);
+                                    $set('customer.phone_number', $customer->phone_number);
+                                    $set('customer.refferal_code', $customer->refferal_code ?? null);
+                                    $set('customer.guest_count', $customer->guest_count ?? null);
+                                    $set('customer.wedding_date', $customer->wedding_date ?? null);
+                                }
+                            }),
+
                         Forms\Components\TextInput::make('customer.grooms_name')
                             ->label('Nama Pengantin Pria')
                             ->required(),
@@ -50,6 +89,7 @@ class TransactionResource extends Resource
                         Forms\Components\TextInput::make('customer.guest_count')
                             ->label('Jumlah Tamu')
                             ->numeric()
+                            ->suffix(' orang')
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -107,7 +147,8 @@ class TransactionResource extends Resource
                         Forms\Components\DatePicker::make('customer.wedding_date')
                             ->label('Tanggal Pernikahan')
                             ->required(),
-                    ]),
+                    ])
+                    ->columns(2),
 
                 Forms\Components\Section::make('Venue Info')
                     ->description('Pilih venue untuk acara pernikahan')
@@ -127,13 +168,29 @@ class TransactionResource extends Resource
                             ->label('Venue')
                             ->options(function ($get) {
                                 $type = $get('venue_type');
-                                if (!$type)
-                                    return [];
-                                return \App\Models\Venue::where('type', $type)->pluck('nama', 'id');
+                                $selectedVenueId = $get('venue_id');
+
+                                $query = \App\Models\Venue::query();
+
+                                if ($type) {
+                                    $query->where('type', $type);
+                                }
+
+                                $venues = $query->pluck('nama', 'id')->toArray();
+
+                                // Always include the selected venue if not in options
+                                if ($selectedVenueId && !array_key_exists($selectedVenueId, $venues)) {
+                                    $venue = \App\Models\Venue::find($selectedVenueId);
+                                    if ($venue) {
+                                        $venues[$venue->id] = $venue->nama;
+                                    }
+                                }
+
+                                return $venues;
                             })
                             ->required()
                             ->searchable()
-                            ->reactive() // <-- ADD THIS
+                            ->reactive()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 // Recalculate total if venue changes
                                 $vendors = $get('vendors') ?? [];
@@ -147,7 +204,8 @@ class TransactionResource extends Resource
                                 $set('total_estimated_price', $discountedTotal);
                             })
                             ->disabled(fn($get) => !$get('venue_type')),
-                    ]),
+                    ])
+                    ->columns(2),
 
                 Forms\Components\Section::make('Catering Info')
                     ->description('Pilih vendor catering untuk acara pernikahan')
@@ -166,6 +224,7 @@ class TransactionResource extends Resource
                                 })->pluck('nama', 'id');
                             })
                             ->searchable()
+                            ->columnSpanFull()
                             ->required()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
@@ -269,7 +328,8 @@ class TransactionResource extends Resource
                             ->dehydrated()
                             ->default(0)
                             ->prefix('IDR'),
-                    ]),
+                    ])
+                    ->columns(2),
 
                 Forms\Components\Section::make('Vendor Info')
                     ->description('Pilih vendor untuk acara pernikahan')
@@ -419,7 +479,6 @@ class TransactionResource extends Resource
                                 $set('total_estimated_price', $discountedTotal);
                             })
                     ]),
-
 
                 Forms\Components\Section::make('Transaction Info')
                     ->description('Informasi transaksi dan total harga')
