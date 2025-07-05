@@ -297,8 +297,7 @@
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `<img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
                         <div class="font-bold text-lg">${venue.name}</div>
-                        <div class="text-gray-600">${venue.description}</div>
-                        <div class="text-indigo-700 font-semibold mt-2">Rp${venue.price.toLocaleString()}</div>`;
+                        <div class="text-gray-600">${venue.description}</div>`;
                         card.onclick = () => {
                             window.wizard.venue_id = venue.id;
                             [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -322,35 +321,34 @@
             const cat = window.wizard.vendor_categories[window.currentVendorCategoryIndex];
             document.getElementById('vendor-category-name').innerText = cat.name;
             axios.get('/api/wizard/vendors', { params: { category_id: cat.id, venue_id: window.wizard.venue_id } })
-                .then(res => {
-                    const container = document.getElementById('vendors-container');
-                    container.innerHTML = '';
-                    if (!window.wizard.vendors[cat.id]) window.wizard.vendors[cat.id] = [];
-                    res.data.vendors.forEach(vendor => {
-                        const card = document.createElement('div');
-                        card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
-                        card.innerHTML = `<img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
-                        <div class="font-bold">${vendor.name}</div>
-                        <div class="text-gray-600 text-xs mb-1">${vendor.description || ''}</div>
-                        <div class="text-indigo-700 font-semibold mb-1">Rp${(vendor.price || 0).toLocaleString()}</div>
-                        ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}`;
-                        if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
-                            card.classList.add('ring-4', 'ring-indigo-400');
-                        }
-                        card.onclick = () => {
-                            const arr = window.wizard.vendors[cat.id];
-                            const idx = arr.findIndex(v => v.id === vendor.id);
-                            if (idx === -1) {
-                                arr.push({ id: vendor.id, estimated_price: vendor.price || 0, is_mandatory: vendor.is_mandatory });
-                                card.classList.add('ring-4', 'ring-indigo-400');
-                            } else {
-                                arr.splice(idx, 1);
-                                card.classList.remove('ring-4', 'ring-indigo-400');
-                            }
-                        };
-                        container.appendChild(card);
-                    });
+            .then(res => {
+                const container = document.getElementById('vendors-container');
+                container.innerHTML = '';
+                if (!window.wizard.vendors[cat.id]) window.wizard.vendors[cat.id] = [];
+                res.data.vendors.forEach(vendor => {
+                const card = document.createElement('div');
+                card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
+                card.innerHTML = `<img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
+                <div class="font-bold">${vendor.name}</div>
+                <div class="text-gray-600 text-xs mb-1">${vendor.description || ''}</div>
+                ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}`;
+                if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
+                    card.classList.add('ring-4', 'ring-indigo-400');
+                }
+                card.onclick = () => {
+                    const arr = window.wizard.vendors[cat.id];
+                    const idx = arr.findIndex(v => v.id === vendor.id);
+                    if (idx === -1) {
+                    arr.push({ id: vendor.id, estimated_price: vendor.price || 0, is_mandatory: vendor.is_mandatory });
+                    card.classList.add('ring-4', 'ring-indigo-400');
+                    } else {
+                    arr.splice(idx, 1);
+                    card.classList.remove('ring-4', 'ring-indigo-400');
+                    }
+                };
+                container.appendChild(card);
                 });
+            });
             document.getElementById('vendors-anim-wrapper').classList.remove('vendors-slide-in', 'vendors-slide-out');
             document.getElementById('vendors-anim-wrapper').classList.add('vendors-active');
         }
@@ -395,7 +393,7 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-green-400 text-center transition';
                     card.innerHTML = `<div class="font-bold">${dis.name}</div>
-                        <div class="text-xs">${dis.description || ''}</div>
+                        <div class="text-xs">${dis.description || ''}</div>';
                         <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
                     card.onclick = () => {
                         const idx = window.wizard.discounts.findIndex(d => d === dis.id);
