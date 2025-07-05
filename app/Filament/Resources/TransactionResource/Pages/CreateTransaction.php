@@ -10,6 +10,8 @@ class CreateTransaction extends CreateRecord
 {
     protected static string $resource = TransactionResource::class;
 
+    protected static ?string $title = 'Buat Rencana Pernikahan';
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $customerData = $data['customer'];

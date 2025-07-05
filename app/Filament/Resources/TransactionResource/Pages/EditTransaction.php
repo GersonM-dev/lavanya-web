@@ -9,7 +9,7 @@ use Filament\Resources\Pages\EditRecord;
 class EditTransaction extends EditRecord
 {
     protected static string $resource = TransactionResource::class;
-
+    protected static ?string $title = 'Edit Rencana Pernikahan';
     protected function getHeaderActions(): array
     {
         return [
