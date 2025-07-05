@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Venue;
-use App\Models\VendorCategories;
 use App\Models\Vendor;
 use App\Models\Catering;
-use App\Models\Discount;
 use App\Models\Customer;
+use App\Models\Discount;
 use App\Models\Transaction;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\VendorCategories;
 
 class WizardController extends Controller
 {
@@ -265,5 +266,20 @@ class WizardController extends Controller
             'total' => $finalTotal,
             'message' => 'Wedding transaction created!'
         ]);
+    }
+
+    public function downloadRecapPdf($transactionId)
+    {
+        $transaction = \App\Models\Transaction::with(['customer', 'venue', 'vendorCatering', 'vendors.vendor'])->findOrFail($transactionId);
+
+        $total = $transaction->total_estimated_price ?? 0;
+
+        return Pdf::loadView('wizard.recap_pdf', [
+            'customer' => $transaction->customer,
+            'venue' => $transaction->venue,
+            'catering' => $transaction->vendorCatering,
+            'vendors' => $transaction->vendors,
+            'total' => $total
+        ])->download('wedding_recap_' . $transactionId . '.pdf');
     }
 }

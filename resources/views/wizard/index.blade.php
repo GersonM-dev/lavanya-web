@@ -6,7 +6,7 @@
         <div id="step-customer" class="form-section" style="display:block;">
             <h2 class="text-xl font-bold mb-4">Data Pengantin</h2>
             <form id="customer-form" autocomplete="off">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-2">
                     <div>
                         <label>Nama Pengantin Pria</label>
                         <input name="grooms_name" class="w-full rounded border px-3 py-2" required />
@@ -276,7 +276,7 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                     card.innerHTML = `<img src="${type.image}" class="w-full h-36 object-cover rounded mb-2">
-                <div class="font-bold text-lg">${type.name}</div>`;
+                    <div class="font-bold text-lg">${type.name}</div>`;
                     card.onclick = () => {
                         window.wizard.venue_type = type.name;
                         [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -296,9 +296,9 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `<img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
-                    <div class="font-bold text-lg">${venue.name}</div>
-                    <div class="text-gray-600">${venue.description}</div>
-                    <div class="text-indigo-700 font-semibold mt-2">Rp${venue.price.toLocaleString()}</div>`;
+                        <div class="font-bold text-lg">${venue.name}</div>
+                        <div class="text-gray-600">${venue.description}</div>
+                        <div class="text-indigo-700 font-semibold mt-2">Rp${venue.price.toLocaleString()}</div>`;
                         card.onclick = () => {
                             window.wizard.venue_id = venue.id;
                             [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -330,10 +330,10 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `<img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
-                    <div class="font-bold">${vendor.name}</div>
-                    <div class="text-gray-600 text-xs mb-1">${vendor.description || ''}</div>
-                    <div class="text-indigo-700 font-semibold mb-1">Rp${(vendor.price || 0).toLocaleString()}</div>
-                    ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}`;
+                        <div class="font-bold">${vendor.name}</div>
+                        <div class="text-gray-600 text-xs mb-1">${vendor.description || ''}</div>
+                        <div class="text-indigo-700 font-semibold mb-1">Rp${(vendor.price || 0).toLocaleString()}</div>
+                        ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}`;
                         if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
                             card.classList.add('ring-4', 'ring-indigo-400');
                         }
@@ -363,8 +363,8 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `<img src="${cat.image}" class="w-full h-28 object-cover rounded mb-2">
-                    <div class="font-bold">${cat.name}</div>
-                    <div class="text-xs text-gray-500">${cat.type}</div>`;
+                        <div class="font-bold">${cat.name}</div>
+                        <div class="text-xs text-gray-500">${cat.type}</div>`;
                         card.onclick = () => {
                             window.wizard.catering_id = cat.id;
                             [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -395,8 +395,8 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-green-400 text-center transition';
                     card.innerHTML = `<div class="font-bold">${dis.name}</div>
-                    <div class="text-xs">${dis.description || ''}</div>
-                    <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
+                        <div class="text-xs">${dis.description || ''}</div>
+                        <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
                     card.onclick = () => {
                         const idx = window.wizard.discounts.findIndex(d => d === dis.id);
                         if (idx === -1) {
@@ -503,6 +503,11 @@
                 }).then(res => {
                     if (res.data.success) {
                         animateSectionTransition('step-success', 'left');
+                        if (res.data.transaction_id) {
+                            setTimeout(() => {
+                                window.open(`/wizard/recap/${res.data.transaction_id}`, '_blank');
+                            }, 900);
+                        }
                     }
                 });
                 return false;
