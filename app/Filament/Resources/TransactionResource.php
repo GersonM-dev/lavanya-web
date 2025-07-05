@@ -192,9 +192,14 @@ class TransactionResource extends Resource
                             ->searchable()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                // Auto-set venue_type based on selected venue
+                                $venue = \App\Models\Venue::find($state);
+                                if ($venue) {
+                                    $set('venue_type', $venue->type);
+                                }
+
                                 // Recalculate total if venue changes
                                 $vendors = $get('vendors') ?? [];
-                                $venue = \App\Models\Venue::find($state);
                                 $venuePrice = $venue?->harga ?? 0;
                                 $vendorTotal = collect($vendors)->sum('estimated_price');
                                 $total = $venuePrice + $vendorTotal + ($get('catering_total_price') ?? 0);
@@ -203,7 +208,16 @@ class TransactionResource extends Resource
                                 $discountedTotal = self::calculateDiscountedPrice($total, $discounts);
                                 $set('total_estimated_price', $discountedTotal);
                             })
+                            ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                if (!$state)
+                                    return;
+                                $venue = \App\Models\Venue::find($state);
+                                if ($venue) {
+                                    $set('venue_type', $venue->type);
+                                }
+                            })
                             ->disabled(fn($get) => !$get('venue_type')),
+
                     ])
                     ->columns(2),
 
