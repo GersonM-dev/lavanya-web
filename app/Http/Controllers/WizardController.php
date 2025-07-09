@@ -74,17 +74,17 @@ class WizardController extends Controller
     public function vendorCategories(Request $request)
     {
         $venueId = $request->query('venue_id');
-        $referralId = $request->query('referral_id');
+        $referralCode = $request->query('referral_code');
 
-        $categories = VendorCategories::whereHas('vendors', function ($q) use ($venueId, $referralId) {
+        $categories = VendorCategories::whereHas('vendors', function ($q) use ($venueId, $referralCode) {
             $q->where('is_active', 1)
                 ->where(function ($q2) use ($venueId) {
                     $q2->whereHas('venues', fn($q3) => $q3->where('venues.id', $venueId))
                         ->orWhere('is_all_venue', true);
                 });
 
-            if ($referralId) {
-                $q->whereHas('referrals', fn($qr) => $qr->where('referrals.id', $referralId));
+            if ($referralCode) {
+                $q->whereHas('referrals', fn($qr) => $qr->where('referrals.referral_code', $referralCode));
             }
         })->get()->map(function ($cat) {
             return [
@@ -102,7 +102,7 @@ class WizardController extends Controller
     {
         $categoryId = $request->query('category_id');
         $venueId = $request->query('venue_id');
-        $referralId = $request->query('referral_id');
+        $referralCode = $request->query('referral_code');
 
         $vendorsQuery = Vendor::where('vendor_category_id', $categoryId)
             ->where('is_active', 1)
@@ -111,8 +111,8 @@ class WizardController extends Controller
                     ->orWhere('is_all_venue', true);
             });
 
-        if ($referralId) {
-            $vendorsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        if ($referralCode) {
+            $vendorsQuery->whereHas('referrals', fn($q) => $q->where('referrals.referral_code', $referralCode));
         }
 
         $vendors = $vendorsQuery->get()->map(function ($v) {
@@ -134,7 +134,7 @@ class WizardController extends Controller
     public function caterings(Request $request)
     {
         $venueId = $request->query('venue_id');
-        $referralId = $request->query('referral_id');
+        $referralCode = $request->query('referral_code');
 
         $cateringsQuery = Catering::where('is_active', 1)
             ->where(function ($q) use ($venueId) {
@@ -142,8 +142,8 @@ class WizardController extends Controller
                     ->orWhere('is_all_venue', true);
             });
 
-        if ($referralId) {
-            $cateringsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        if ($referralCode) {
+            $cateringsQuery->whereHas('referrals', fn($q) => $q->where('referrals.referral_code', $referralCode));
         }
 
         $caterings = $cateringsQuery->get()->map(function ($c) {
