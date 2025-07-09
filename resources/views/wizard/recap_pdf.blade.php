@@ -10,14 +10,14 @@
     <div class="max-w-3xl mx-auto space-y-8">
 
         <div>
-            <h1 class="text-2xl font-bold text-center mb-2">💍 Wedding Plan Recap</h1>
+            <h1 class="text-2xl font-bold text-center mb-2">Wedding Plan Recap</h1>
             <p class="text-center text-gray-500">Lavanya Java Heritage</p>
             <hr class="mt-4 border-gray-300">
         </div>
 
         <!-- Customer Info -->
         <div>
-            <h2 class="text-lg font-semibold border-b pb-1 mb-2">👰 Customer Info</h2>
+            <h2 class="text-lg font-semibold border-b pb-1 mb-2">Customer Info</h2>
             <ul class="space-y-1">
                 <li><strong>Groom:</strong> {{ $customer->grooms_name }}</li>
                 <li><strong>Bride:</strong> {{ $customer->brides_name }}</li>
@@ -32,7 +32,7 @@
 
         <!-- Venue Info -->
         <div>
-            <h2 class="text-lg font-semibold border-b pb-1 mb-2">🏛️ Venue</h2>
+            <h2 class="text-lg font-semibold border-b pb-1 mb-2">Venue</h2>
             <ul class="space-y-1">
                 <li><strong>Name:</strong> {{ $venue->nama ?? '-' }}</li>
                 <li><strong>Type:</strong> {{ $venue->type ?? '-' }}</li>
@@ -43,7 +43,7 @@
         <!-- Catering -->
         @if($catering)
         <div>
-            <h2 class="text-lg font-semibold border-b pb-1 mb-2">🍽️ Catering</h2>
+            <h2 class="text-lg font-semibold border-b pb-1 mb-2">Catering</h2>
             <ul class="space-y-1">
                 <li><strong>Name:</strong> {{ $catering->nama ?? '-' }}</li>
                 <li><strong>Description:</strong> {!! str($catering->deskripsi ?? '-')->sanitizeHtml() !!}</li>
@@ -53,7 +53,7 @@
 
         <!-- Vendors -->
         <div>
-            <h2 class="text-lg font-semibold border-b pb-1 mb-3">🎤 Vendors</h2>
+            <h2 class="text-lg font-semibold border-b pb-1 mb-3">Vendors</h2>
             <div class="overflow-hidden border rounded">
                 <table class="min-w-full table-auto">
                     <thead class="bg-gray-100 text-left">

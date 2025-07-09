@@ -7,6 +7,7 @@ use App\Models\Vendor;
 use App\Models\Catering;
 use App\Models\Customer;
 use App\Models\Discount;
+use App\Models\Referral;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -14,6 +15,10 @@ use App\Models\VendorCategories;
 
 class WizardController extends Controller
 {
+    public function index(Referral $referral = null)
+    {
+        return view('wizard.index', ['referral' => $referral]);
+    }
     // 1. Get venue types (for first step)
     public function venueTypes()
     {
@@ -31,12 +36,17 @@ class WizardController extends Controller
     {
         $type = $request->query('type');
         $guestCount = $request->query('guest_count');
+        $referralId = $request->query('referral_id');
 
         $venuesQuery = Venue::where('type', $type)
             ->where('is_active', 1);
 
         if ($guestCount) {
             $venuesQuery->where('capacity', '>=', $guestCount);
+        }
+
+        if ($referralId) {
+            $venuesQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
         }
 
         $venues = $venuesQuery->get()->map(function ($venue) {
@@ -53,74 +63,99 @@ class WizardController extends Controller
         return response()->json(['venues' => $venues]);
     }
 
+
     // 3. Get vendor categories with available vendors for this venue
     public function vendorCategories(Request $request)
     {
         $venueId = $request->query('venue_id');
-        $categories = VendorCategories::whereHas('vendors', function ($q) use ($venueId) {
+        $referralId = $request->query('referral_id');
+
+        $categories = VendorCategories::whereHas('vendors', function ($q) use ($venueId, $referralId) {
             $q->where('is_active', 1)
                 ->where(function ($q2) use ($venueId) {
                     $q2->whereHas('venues', fn($q3) => $q3->where('venues.id', $venueId))
                         ->orWhere('is_all_venue', true);
                 });
+
+            if ($referralId) {
+                $q->whereHas('referrals', fn($qr) => $qr->where('referrals.id', $referralId));
+            }
         })->get()->map(function ($cat) {
             return [
                 'id' => $cat->id,
                 'name' => $cat->name,
             ];
         });
+
         return response()->json(['categories' => $categories]);
     }
+
 
     // 4. Get vendors for a category and venue
     public function vendors(Request $request)
     {
         $categoryId = $request->query('category_id');
         $venueId = $request->query('venue_id');
-        $vendors = Vendor::where('vendor_category_id', $categoryId)
+        $referralId = $request->query('referral_id');
+
+        $vendorsQuery = Vendor::where('vendor_category_id', $categoryId)
             ->where('is_active', 1)
             ->where(function ($q) use ($venueId) {
                 $q->whereHas('venues', fn($qq) => $qq->where('venues.id', $venueId))
                     ->orWhere('is_all_venue', true);
-            })
-            ->get()
-            ->map(function ($v) {
-                return [
-                    'id' => $v->id,
-                    'name' => $v->nama,
-                    'image' => $v->image1 ? asset('storage/' . $v->image1) : asset('images/default-vendor.jpg'),
-                    'price' => $v->harga,
-                    'description' => $v->deskripsi,
-                    'is_mandatory' => (bool) $v->is_mandatory,
-                ];
             });
+
+        if ($referralId) {
+            $vendorsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        }
+
+        $vendors = $vendorsQuery->get()->map(function ($v) {
+            return [
+                'id' => $v->id,
+                'name' => $v->nama,
+                'image' => $v->image1 ? asset('storage/' . $v->image1) : asset('images/default-vendor.jpg'),
+                'price' => $v->harga,
+                'description' => $v->deskripsi,
+                'is_mandatory' => (bool) $v->is_mandatory,
+            ];
+        });
+
         return response()->json(['vendors' => $vendors]);
     }
+
 
     // 5. Get caterings for venue
     public function caterings(Request $request)
     {
         $venueId = $request->query('venue_id');
-        $caterings = Catering::where('is_active', 1)
+        $referralId = $request->query('referral_id');
+
+        $cateringsQuery = Catering::where('is_active', 1)
             ->where(function ($q) use ($venueId) {
                 $q->whereHas('venues', fn($qq) => $qq->where('venues.id', $venueId))
                     ->orWhere('is_all_venue', true);
-            })
-            ->get()
-            ->map(function ($c) {
-                return [
-                    'id' => $c->id,
-                    'name' => $c->nama,
-                    'image' => $c->image1 ? asset('storage/' . $c->image1) : asset('images/default-catering.jpg'),
-                    'type' => $c->type,
-                    'buffet_price' => $c->buffet_price,
-                    'gubugan_price' => $c->gubugan_price,
-                    'dessert_price' => $c->dessert_price,
-                    'base_price' => $c->base_price,
-                ];
             });
+
+        if ($referralId) {
+            $cateringsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        }
+
+        $caterings = $cateringsQuery->get()->map(function ($c) {
+            return [
+                'id' => $c->id,
+                'name' => $c->nama,
+                'image' => $c->image1 ? asset('storage/' . $c->image1) : asset('images/default-catering.jpg'),
+                'type' => $c->type,
+                'buffet_price' => $c->buffet_price,
+                'gubugan_price' => $c->gubugan_price,
+                'dessert_price' => $c->dessert_price,
+                'base_price' => $c->base_price,
+            ];
+        });
+
         return response()->json(['caterings' => $caterings]);
     }
+
 
     // 6. Get eligible discounts
     public function discounts(Request $request)

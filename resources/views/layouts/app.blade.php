@@ -24,38 +24,32 @@
             min-height: 100vh;
         }
 
-        .brand-gradient {
-            background: linear-gradient(90deg, #fde68a 0%, #c7d2fe 100%);
-        }
-
         .form-section {
-            transition: transform 0.4s cubic-bezier(.4, 2, .6, 1), opacity 1s;
-            will-change: transform, opacity;
+            display: none;
         }
 
-        .swipe-left-out {
-            transform: translateX(-100vw);
-            opacity: 0;
+        .form-section.active {
+            display: block;
         }
 
-        .swipe-right-in {
-            transform: translateX(100vw);
-            opacity: 0;
-        }
-
-        .swipe-left-in {
-            transform: translateX(100vw);
-            opacity: 0;
-        }
-
-        .swipe-right-out {
-            transform: translateX(-100vw);
-            opacity: 0;
-        }
-
-        .active {
-            transform: translateX(0);
+        #detail-modal.show {
             opacity: 1;
+            transform: scale(1);
+            transition: all 0.25s cubic-bezier(.4, 2, .6, 1);
+        }
+
+        #detail-modal-overlay.show {
+            display: flex !important;
+        }
+
+        #detail-modal-overlay {
+            background: transparent !important;
+            align-items: flex-start !important;
+        }
+
+        #detail-modal {
+            margin-top: 0;
+            /* reset if needed */
         }
     </style>
 

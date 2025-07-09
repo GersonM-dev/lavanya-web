@@ -35,4 +35,9 @@ class Vendor extends Model
         return $this->morphToMany(Discount::class, 'discountable');
     }
 
+    public function referrals()
+    {
+        return $this->belongsToMany(Referral::class);
+    }
+
 }
