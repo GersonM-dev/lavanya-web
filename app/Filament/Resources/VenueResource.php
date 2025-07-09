@@ -41,6 +41,13 @@ class VenueResource extends Resource
                         'Outdoor' => 'Outdoor',
                         'Semi-Outdoor' => 'Semi-Outdoor',
                     ]),
+
+                TextInput::make('capacity')
+                    ->label('Kapasitas Tamu')
+                    ->numeric()
+                    ->default(0)
+                    ->required(),
+                    
                 TextInput::make('harga')
                     ->label('Harga')
                     ->numeric()
