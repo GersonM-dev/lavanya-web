@@ -184,6 +184,7 @@
             currentSectionId = nextSectionId;
             window.scrollTo({ top: 0 });
         }
+        
         function animateVendorsContent(_, callback) {
             if (typeof callback === 'function') callback();
         }
@@ -252,6 +253,7 @@
                     animateSectionTransition('step-vendors', 'left');
                 });
         }
+        
         function fetchVendorsForCurrentCategory() {
             const cat = window.wizard.vendor_categories[window.currentVendorCategoryIndex];
             document.getElementById('vendor-category-name').innerText = cat.name;
@@ -360,8 +362,7 @@
                 });
             });
         }
-
-        // Modal logic
+        
         function showDetailModalFromBtn(e, itemJson, type) {
             e.stopPropagation();
             const item = JSON.parse(decodeURIComponent(itemJson));
@@ -418,13 +419,14 @@
             document.getElementById('detail-modal').classList.remove('hidden');
             document.getElementById('detail-modal-backdrop').classList.remove('hidden');
         }
+        
         function closeDetailModal() {
             document.getElementById('detail-modal').classList.add('hidden');
             document.getElementById('detail-modal-backdrop').classList.add('hidden');
         }
+        
         document.getElementById('detail-modal-backdrop').onclick = closeDetailModal;
 
-        // Navigation (unchanged from before)
         document.addEventListener('DOMContentLoaded', function () {
             animateSectionTransition('step-customer');
 

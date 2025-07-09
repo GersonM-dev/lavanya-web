@@ -36,7 +36,7 @@ class WizardController extends Controller
     {
         $type = $request->query('type');
         $guestCount = $request->query('guest_count');
-        $referralId = $request->query('referral_id');
+        $referralCode = $request->query('referral_code');
 
         $venuesQuery = Venue::where('type', $type)
             ->where('is_active', 1);
@@ -45,8 +45,10 @@ class WizardController extends Controller
             $venuesQuery->where('capacity', '>=', $guestCount);
         }
 
-        if ($referralId) {
-            $venuesQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        if ($referralCode) {
+            $venuesQuery->whereHas('referrals', function ($q) use ($referralCode) {
+                $q->where('referrals.referral_code', $referralCode);
+            });
         }
 
         $venues = $venuesQuery->get()->map(function ($venue) {
