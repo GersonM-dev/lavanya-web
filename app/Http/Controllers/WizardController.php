@@ -38,18 +38,21 @@ class WizardController extends Controller
         $guestCount = $request->query('guest_count');
         $referralCode = $request->query('referral_code');
 
-        $venuesQuery = Venue::where('type', $type)
-            ->where('is_active', 1);
-
-        if ($guestCount) {
-            $venuesQuery->where('capacity', '>=', $guestCount);
-        }
+        $venuesQuery = Venue::query()->where('is_active', 1);
 
         if ($referralCode) {
             $venuesQuery->whereHas('referrals', function ($q) use ($referralCode) {
                 $q->where('referrals.referral_code', $referralCode);
             });
+        } else {
+            $venuesQuery->where('type', $type);
         }
+
+        if ($guestCount) {
+            $venuesQuery->where('capacity', '>=', $guestCount);
+        }
+
+        // dd($venuesQuery->pluck('id')); // Cek output venue_id
 
         $venues = $venuesQuery->get()->map(function ($venue) {
             return [
@@ -64,6 +67,7 @@ class WizardController extends Controller
 
         return response()->json(['venues' => $venues]);
     }
+
 
 
     // 3. Get vendor categories with available vendors for this venue
