@@ -46,6 +46,7 @@ class VenueResource extends Resource
                     ->label('Kapasitas Tamu')
                     ->numeric()
                     ->default(0)
+                    ->suffix('orang')
                     ->required(),
                     
                 TextInput::make('harga')
@@ -93,7 +94,8 @@ class VenueResource extends Resource
                     ->sortable(),
                 TextColumn::make('capacity')
                     ->label('Kapasitas Tamu')
-                    ->sortable(),
+                    ->sortable()
+                    ->suffix('orang'),
                 TextColumn::make('harga')
                     ->label('Harga')
                     ->sortable()
