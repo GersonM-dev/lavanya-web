@@ -36,7 +36,7 @@
             <ul class="space-y-1">
                 <li><strong>Name:</strong> {{ $venue->nama ?? '-' }}</li>
                 <li><strong>Type:</strong> {{ $venue->type ?? '-' }}</li>
-                <li><strong>Description:</strong> {{ $venue->deskripsi ?? '-' }}</li>
+                <li><strong>Description:</strong> {!! str($venue->deskripsi ?? '-')->sanitizeHtml() !!}</li>
             </ul>
         </div>
 
@@ -46,7 +46,7 @@
             <h2 class="text-lg font-semibold border-b pb-1 mb-2">🍽️ Catering</h2>
             <ul class="space-y-1">
                 <li><strong>Name:</strong> {{ $catering->nama ?? '-' }}</li>
-                <li><strong>Description:</strong> {{ $catering->deskripsi ?? '-' }}</li>
+                <li><strong>Description:</strong> {!! str($catering->deskripsi ?? '-')->sanitizeHtml() !!}</li>
             </ul>
         </div>
         @endif
@@ -66,7 +66,7 @@
                         @foreach($vendors as $vendor)
                         <tr class="border-t">
                             <td class="p-3">{{ $vendor->vendor->nama ?? '-' }}</td>
-                            <td class="p-3">{{ $vendor->vendor->deskripsi ?? '-' }}</td>
+                            <td class="p-3">{!! str($vendor->vendor->deskripsi ?? '-')->sanitizeHtml() !!}</td>
                         </tr>
                         @endforeach
                     </tbody>
