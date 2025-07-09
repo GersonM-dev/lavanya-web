@@ -91,6 +91,9 @@ class VenueResource extends Resource
                 TextColumn::make('type')
                     ->label('Tipe Wedding Venue')
                     ->sortable(),
+                TextColumn::make('capacity')
+                    ->label('Kapasitas Tamu')
+                    ->sortable(),
                 TextColumn::make('harga')
                     ->label('Harga')
                     ->sortable()
