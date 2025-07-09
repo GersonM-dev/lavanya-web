@@ -95,7 +95,7 @@ class VenueResource extends Resource
                 TextColumn::make('capacity')
                     ->label('Kapasitas Tamu')
                     ->sortable()
-                    ->suffix('orang'),
+                    ->suffix(' orang'),
                 TextColumn::make('harga')
                     ->label('Harga')
                     ->sortable()
