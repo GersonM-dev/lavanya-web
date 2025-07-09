@@ -16,6 +16,7 @@ class Venue extends Model
         'image2',
         'image3',
         'is_active',
+        'capacity', // Added capacity field
     ];
 
     public function vendors()

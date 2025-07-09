@@ -222,6 +222,7 @@
                 if (typeof callback === 'function') callback();
                 wrapper.classList.remove('vendors-slide-in', 'vendors-slide-out');
                 wrapper.classList.add('vendors-active');
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // 👈 Add this line
             }, 700);
         }
 
@@ -276,7 +277,7 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                     card.innerHTML = `<img src="${type.image}" class="w-full h-36 object-cover rounded mb-2">
-                    <div class="font-bold text-lg">${type.name}</div>`;
+                        <div class="font-bold text-lg">${type.name}</div>`;
                     card.onclick = () => {
                         window.wizard.venue_type = type.name;
                         [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -288,26 +289,35 @@
             });
         }
         function fetchVenues() {
-            axios.get('/api/wizard/venues', { params: { type: window.wizard.venue_type } })
-                .then(res => {
-                    const container = document.getElementById('venues-container');
-                    container.innerHTML = '';
-                    res.data.venues.forEach(venue => {
-                        const card = document.createElement('div');
-                        card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
-                        card.innerHTML = `<img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
-                        <div class="font-bold text-lg">${venue.name}</div>
-                        <div class="text-gray-600">${venue.description}</div>`;
-                        card.onclick = () => {
-                            window.wizard.venue_id = venue.id;
-                            [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
-                            card.classList.add('ring-4', 'ring-indigo-400');
-                            document.querySelector('#step-venue .next-btn').disabled = false;
-                        };
-                        container.appendChild(card);
-                    });
+            const guestCount = window.wizard.customer?.guest_count || 0;
+
+            axios.get('/api/wizard/venues', {
+                params: {
+                    type: window.wizard.venue_type,
+                    guest_count: guestCount
+                }
+            }).then(res => {
+                const container = document.getElementById('venues-container');
+                container.innerHTML = '';
+                res.data.venues.forEach(venue => {
+                    const card = document.createElement('div');
+                    card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
+                    card.innerHTML = `
+                    <img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
+                    <div class="font-bold text-lg">${venue.name}</div>
+                    <div class="text-gray-600">${venue.description}</div>
+                `;
+                    card.onclick = () => {
+                        window.wizard.venue_id = venue.id;
+                        [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
+                        card.classList.add('ring-4', 'ring-indigo-400');
+                        document.querySelector('#step-venue .next-btn').disabled = false;
+                    };
+                    container.appendChild(card);
                 });
+            });
         }
+
         function fetchVendorCategoriesAndFirst() {
             axios.get('/api/wizard/vendor-categories', { params: { venue_id: window.wizard.venue_id } })
                 .then(res => {
@@ -321,34 +331,34 @@
             const cat = window.wizard.vendor_categories[window.currentVendorCategoryIndex];
             document.getElementById('vendor-category-name').innerText = cat.name;
             axios.get('/api/wizard/vendors', { params: { category_id: cat.id, venue_id: window.wizard.venue_id } })
-            .then(res => {
-                const container = document.getElementById('vendors-container');
-                container.innerHTML = '';
-                if (!window.wizard.vendors[cat.id]) window.wizard.vendors[cat.id] = [];
-                res.data.vendors.forEach(vendor => {
-                const card = document.createElement('div');
-                card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
-                card.innerHTML = `<img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
-                <div class="font-bold">${vendor.name}</div>
-                <div class="text-gray-600 text-xs mb-1">${vendor.description || ''}</div>
-                ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}`;
-                if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
-                    card.classList.add('ring-4', 'ring-indigo-400');
-                }
-                card.onclick = () => {
-                    const arr = window.wizard.vendors[cat.id];
-                    const idx = arr.findIndex(v => v.id === vendor.id);
-                    if (idx === -1) {
-                    arr.push({ id: vendor.id, estimated_price: vendor.price || 0, is_mandatory: vendor.is_mandatory });
-                    card.classList.add('ring-4', 'ring-indigo-400');
-                    } else {
-                    arr.splice(idx, 1);
-                    card.classList.remove('ring-4', 'ring-indigo-400');
-                    }
-                };
-                container.appendChild(card);
+                .then(res => {
+                    const container = document.getElementById('vendors-container');
+                    container.innerHTML = '';
+                    if (!window.wizard.vendors[cat.id]) window.wizard.vendors[cat.id] = [];
+                    res.data.vendors.forEach(vendor => {
+                        const card = document.createElement('div');
+                        card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
+                        card.innerHTML = `<img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
+                    <div class="font-bold">${vendor.name}</div>
+                    <div class="text-gray-600 text-xs mb-1">${vendor.description || ''}</div>
+                    ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}`;
+                        if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
+                            card.classList.add('ring-4', 'ring-indigo-400');
+                        }
+                        card.onclick = () => {
+                            const arr = window.wizard.vendors[cat.id];
+                            const idx = arr.findIndex(v => v.id === vendor.id);
+                            if (idx === -1) {
+                                arr.push({ id: vendor.id, estimated_price: vendor.price || 0, is_mandatory: vendor.is_mandatory });
+                                card.classList.add('ring-4', 'ring-indigo-400');
+                            } else {
+                                arr.splice(idx, 1);
+                                card.classList.remove('ring-4', 'ring-indigo-400');
+                            }
+                        };
+                        container.appendChild(card);
+                    });
                 });
-            });
             document.getElementById('vendors-anim-wrapper').classList.remove('vendors-slide-in', 'vendors-slide-out');
             document.getElementById('vendors-anim-wrapper').classList.add('vendors-active');
         }
@@ -361,8 +371,8 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `<img src="${cat.image}" class="w-full h-28 object-cover rounded mb-2">
-                        <div class="font-bold">${cat.name}</div>
-                        <div class="text-xs text-gray-500">${cat.type}</div>`;
+                            <div class="font-bold">${cat.name}</div>
+                            <div class="text-xs text-gray-500">${cat.type}</div>`;
                         card.onclick = () => {
                             window.wizard.catering_id = cat.id;
                             [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -393,8 +403,8 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-green-400 text-center transition';
                     card.innerHTML = `<div class="font-bold">${dis.name}</div>
-                        <div class="text-xs">${dis.description || ''}</div>';
-                        <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
+                            <div class="text-xs">${dis.description || ''}</div>';
+                            <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
                     card.onclick = () => {
                         const idx = window.wizard.discounts.findIndex(d => d === dis.id);
                         if (idx === -1) {

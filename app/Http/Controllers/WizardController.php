@@ -30,7 +30,16 @@ class WizardController extends Controller
     public function venues(Request $request)
     {
         $type = $request->query('type');
-        $venues = Venue::where('type', $type)->where('is_active', 1)->get()->map(function ($venue) {
+        $guestCount = $request->query('guest_count');
+
+        $venuesQuery = Venue::where('type', $type)
+            ->where('is_active', 1);
+
+        if ($guestCount) {
+            $venuesQuery->where('capacity', '>=', $guestCount);
+        }
+
+        $venues = $venuesQuery->get()->map(function ($venue) {
             return [
                 'id' => $venue->id,
                 'name' => $venue->nama,
@@ -40,6 +49,7 @@ class WizardController extends Controller
                 'location' => $venue->location ?? '',
             ];
         });
+
         return response()->json(['venues' => $venues]);
     }
 
