@@ -15,9 +15,6 @@
 
     <!-- Axios for AJAX -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
     <style>
         html,
         body {
@@ -28,10 +25,16 @@
 
         .form-section {
             display: none;
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.5s, transform 0.5s;
         }
 
         .form-section.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 1;
         }
 
         #detail-modal.show {
@@ -67,7 +70,6 @@
     </footer>
 
     @stack('scripts')
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </body>
 
 </html>
