@@ -146,6 +146,8 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- get referral slug from URL -->
     <script>
         // Detect slug from URL like https://domain.com/{slug}
         function getReferralSlug() {
@@ -173,6 +175,7 @@
         });
     </script>
 
+    <!-- step by step wizard logic -->
     <script>
         window.wizard = { venue_type: null, venue_id: null, vendor_categories: [], vendors: {}, catering_id: null, discounts: [], customer: {} };
         window.currentVendorCategoryIndex = 0;
@@ -372,9 +375,9 @@
             <div class="text-center">
                 <!-- Images -->
                 <div class="flex gap-2 justify-center mb-3">
-                    ${item.image ? `<img src="${item.image}" class="w-24 h-16 object-cover rounded mx-auto">` : ''}
-                    ${item.image2 ? `<img src="${item.image2}" class="w-24 h-16 object-cover rounded mx-auto">` : ''}
-                    ${item.image3 ? `<img src="${item.image3}" class="w-24 h-16 object-cover rounded mx-auto">` : ''}
+                    ${item.image ? `<img src="${item.image}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                    ${item.image2 ? `<img src="${item.image2}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                    ${item.image3 ? `<img src="${item.image3}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
                 </div>
                 <!-- Name/title -->
                 <div class="font-bold text-xl mb-1">${item.name}</div>
