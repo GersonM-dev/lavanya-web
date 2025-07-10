@@ -241,6 +241,7 @@ class WizardController extends Controller
             'customer.guest_count' => 'required|integer|min:1',
             'customer.wedding_date' => 'required|date|after_or_equal:today',
             'customer.phone_number' => 'required|string|max:20',
+            'customer.refferal_code' => 'nullable|string|max:50',
             'venue_id' => 'required|exists:venues,id',
             'catering_id' => 'required|exists:caterings,id',
             'vendors' => 'required|array|min:1',
