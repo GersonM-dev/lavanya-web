@@ -36,7 +36,7 @@ class WizardController extends Controller
     {
         $type = $request->query('type');
         $guestCount = $request->query('guest_count');
-        $referralCode = $request->query('referral_code');
+        $referralCode = $request->query('referral_id'); // <-- dari frontend
 
         $venuesQuery = Venue::where('type', $type)
             ->where('is_active', 1);
@@ -45,17 +45,19 @@ class WizardController extends Controller
             $venuesQuery->where('capacity', '>=', $guestCount);
         }
 
+        // Convert referral_code ke id sebelum query
+        $referralId = null;
         if ($referralCode) {
-            // Cari referral id berdasarkan referral_code
             $referralId = \App\Models\Referral::where('referral_code', $referralCode)->value('id');
-            if ($referralId) {
-                $venuesQuery->whereHas('referrals', function ($q) use ($referralId) {
-                    $q->where('referrals.id', $referralId);
-                });
-            } else {
-                // Tidak ada referral, jangan tampilkan venue apapun
-                $venuesQuery->whereRaw('0=1');
-            }
+        }
+
+        if ($referralId) {
+            $venuesQuery->whereHas('referrals', function ($q) use ($referralId) {
+                $q->where('referrals.id', $referralId);
+            });
+        } elseif ($referralCode) {
+            // Ada referral_code tapi tidak valid, hasil dikosongkan
+            $venuesQuery->whereRaw('0=1');
         }
 
         $venues = $venuesQuery->get()->map(function ($venue) {
@@ -71,6 +73,7 @@ class WizardController extends Controller
 
         return response()->json(['venues' => $venues]);
     }
+
 
 
 
