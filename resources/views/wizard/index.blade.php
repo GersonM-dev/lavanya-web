@@ -123,10 +123,16 @@
     <style>
         .form-section {
             display: none;
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.5s, transform 0.5s;
         }
 
         .form-section.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 1;
         }
 
         .max-w-xl {
