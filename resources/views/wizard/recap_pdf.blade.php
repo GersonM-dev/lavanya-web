@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Wedding Plan Recap</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-gradient-to-br from-indigo-50 via-white to-amber-50 min-h-screen flex items-center">
+@extends('layouts.app')
 
+@section('content')
     <div class="w-full max-w-2xl mx-auto space-y-7 py-12 px-2">
         <!-- Header Hero Card -->
         <div class="bg-white rounded-3xl shadow-xl py-7 px-6 text-center relative overflow-hidden mb-6 border-2 border-indigo-200">
@@ -99,8 +93,6 @@
             <div class="text-3xl text-amber-600 font-bold">IDR {{ number_format($total, 0, ',', '.') }}</div>
         </div>
     </div>
-    <!-- If you want to use material icons (uncomment if needed) -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+@endsection
 </body>
 </html>
