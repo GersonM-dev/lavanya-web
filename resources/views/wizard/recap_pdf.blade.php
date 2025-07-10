@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Wedding Plan Recap</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gradient-to-br from-indigo-50 via-white to-amber-50 min-h-screen flex items-center">
 
