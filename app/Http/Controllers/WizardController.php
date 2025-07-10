@@ -74,10 +74,6 @@ class WizardController extends Controller
         return response()->json(['venues' => $venues]);
     }
 
-
-
-
-
     // 3. Get vendor categories with available vendors for this venue
     public function vendorCategories(Request $request)
     {
@@ -104,13 +100,16 @@ class WizardController extends Controller
         return response()->json(['categories' => $categories]);
     }
 
-
-    // 4. Get vendors for a category and venue
     public function vendors(Request $request)
     {
         $categoryId = $request->query('category_id');
         $venueId = $request->query('venue_id');
         $referralCode = $request->query('referral_code');
+
+        $referralId = null;
+        if ($referralCode) {
+            $referralId = \App\Models\Referral::where('referral_code', $referralCode)->value('id');
+        }
 
         $vendorsQuery = Vendor::where('vendor_category_id', $categoryId)
             ->where('is_active', 1)
@@ -119,8 +118,11 @@ class WizardController extends Controller
                     ->orWhere('is_all_venue', true);
             });
 
-        if ($referralCode) {
-            $vendorsQuery->whereHas('referrals', fn($q) => $q->where('referrals.referral_code', $referralCode));
+        if ($referralId) {
+            $vendorsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        } elseif ($referralCode) {
+            // Ada kode tapi tidak valid, kosongkan hasil
+            $vendorsQuery->whereRaw('0=1');
         }
 
         $vendors = $vendorsQuery->get()->map(function ($v) {
@@ -137,12 +139,16 @@ class WizardController extends Controller
         return response()->json(['vendors' => $vendors]);
     }
 
-
-    // 5. Get caterings for venue
+    // CATERINGS
     public function caterings(Request $request)
     {
         $venueId = $request->query('venue_id');
         $referralCode = $request->query('referral_code');
+
+        $referralId = null;
+        if ($referralCode) {
+            $referralId = \App\Models\Referral::where('referral_code', $referralCode)->value('id');
+        }
 
         $cateringsQuery = Catering::where('is_active', 1)
             ->where(function ($q) use ($venueId) {
@@ -150,8 +156,10 @@ class WizardController extends Controller
                     ->orWhere('is_all_venue', true);
             });
 
-        if ($referralCode) {
-            $cateringsQuery->whereHas('referrals', fn($q) => $q->where('referrals.referral_code', $referralCode));
+        if ($referralId) {
+            $cateringsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        } elseif ($referralCode) {
+            $cateringsQuery->whereRaw('0=1');
         }
 
         $caterings = $cateringsQuery->get()->map(function ($c) {
@@ -169,6 +177,7 @@ class WizardController extends Controller
 
         return response()->json(['caterings' => $caterings]);
     }
+
 
 
     // 6. Get eligible discounts
