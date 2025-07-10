@@ -38,21 +38,25 @@ class WizardController extends Controller
         $guestCount = $request->query('guest_count');
         $referralCode = $request->query('referral_code');
 
-        $venuesQuery = Venue::query()->where('is_active', 1);
-
-        if ($referralCode) {
-            $venuesQuery->whereHas('referrals', function ($q) use ($referralCode) {
-                $q->where('referrals.referral_code', $referralCode);
-            });
-        } else {
-            $venuesQuery->where('type', $type);
-        }
+        $venuesQuery = Venue::where('type', $type)
+            ->where('is_active', 1);
 
         if ($guestCount) {
             $venuesQuery->where('capacity', '>=', $guestCount);
         }
 
-        // dd($venuesQuery->pluck('id')); // Cek output venue_id
+        if ($referralCode) {
+            // Cari referral id berdasarkan referral_code
+            $referralId = \App\Models\Referral::where('referral_code', $referralCode)->value('id');
+            if ($referralId) {
+                $venuesQuery->whereHas('referrals', function ($q) use ($referralId) {
+                    $q->where('referrals.id', $referralId);
+                });
+            } else {
+                // Tidak ada referral, jangan tampilkan venue apapun
+                $venuesQuery->whereRaw('0=1');
+            }
+        }
 
         $venues = $venuesQuery->get()->map(function ($venue) {
             return [
@@ -67,6 +71,7 @@ class WizardController extends Controller
 
         return response()->json(['venues' => $venues]);
     }
+
 
 
 
