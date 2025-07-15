@@ -501,7 +501,7 @@
                         animateSectionTransition('step-success', 'left');
                         if (res.data.recap_link) {
                             setTimeout(() => {
-                                window.location.href = '/' + res.data.recap_link;
+                                window.location.href = '/recap/' + res.data.recap_link;
                             }, 900);
                         }
                     }
