@@ -1,98 +1,207 @@
-@extends('layouts.app')
-
-@section('content')
-    <div class="w-full max-w-2xl mx-auto space-y-7 py-12 px-2">
-        <!-- Header Hero Card -->
-        <div class="bg-white rounded-3xl shadow-xl py-7 px-6 text-center relative overflow-hidden mb-6 border-2 border-indigo-200">
-            <div class="mb-2">
-                <svg class="w-12 h-12 mx-auto mb-2 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2"
-                     viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                          d="M7 17l5-5 5 5M7 7l5 5 5-5"/>
-                </svg>
-            </div>
-            <h1 class="text-3xl font-extrabold text-indigo-700 mb-1 tracking-tight">Recap Wedding Plan</h1>
-            <p class="text-base text-gray-500 mb-2">Lavanya Java Heritage</p>
-            <p class="text-xs text-amber-600">Terima kasih telah mempercayakan momen spesial Anda kepada kami.</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Recap Wedding Plan</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            background: #fff;
+            color: #2d2d2d;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 24px auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+            border: 1.5px solid #fde68a;
+            padding: 32px 30px 24px 30px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .header h1 {
+            color: #92400e;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .header .desc {
+            color: #aaa;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .header .thanks {
+            color: #d97706;
+            font-size: 0.95rem;
+        }
+        .section-title {
+            color: #b45309;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-top: 2px solid #f59e42;
+            padding-top: 16px;
+            margin-top: 28px;
+            margin-bottom: 7px;
+            letter-spacing: .02em;
+        }
+        .info-grid {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 0.97rem;
+            margin-bottom: 10px;
+        }
+        .info-grid div {
+            flex: 1 1 230px;
+            margin-bottom: 4px;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+        .table th, .table td {
+            padding: 8px 10px;
+            border: 1px solid #fde68a;
+        }
+        .table th {
+            background: #fff8e1;
+            color: #b45309;
+            font-weight: 700;
+            text-align: left;
+        }
+        .img-thumb {
+            max-width: 130px;
+            max-height: 90px;
+            border-radius: 7px;
+            border: 1.5px solid #fde68a;
+        }
+        .total-budget {
+            border-top: 2px solid #fde68a;
+            margin-top: 28px;
+            padding-top: 22px;
+            text-align: center;
+        }
+        .total-budget h2 {
+            color: #92400e;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+        .total-budget .amount {
+            color: #d97706;
+            font-size: 2.1rem;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Recap Wedding Plan</h1>
+            <div class="desc">Lavanya Java Heritage</div>
+            <div class="thanks">Terima kasih telah mempercayakan momen spesial Anda kepada kami.</div>
         </div>
 
         <!-- Customer Info -->
-        <div class="bg-white rounded-2xl shadow-md p-6 flex flex-col gap-2 border border-indigo-100">
-            <h2 class="text-lg font-bold text-indigo-600 mb-2 tracking-tight flex items-center gap-2">
-                <span class="material-icons align-bottom text-amber-500">favorite</span>
-                Data Pengantin
-            </h2>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-                <div><span class="font-semibold">Pengantin Pria:</span> <span class="text-gray-700">{{ $customer->grooms_name }}</span></div>
-                <div><span class="font-semibold">Pengantin Wanita:</span> <span class="text-gray-700">{{ $customer->brides_name }}</span></div>
-                <div><span class="font-semibold">Tamu:</span> <span class="text-gray-700">{{ $customer->guest_count }}</span></div>
-                <div><span class="font-semibold">Tanggal:</span> <span class="text-gray-700">{{ $customer->wedding_date }}</span></div>
-                <div><span class="font-semibold">Telepon:</span> <span class="text-gray-700">{{ $customer->phone_number }}</span></div>
-                @if(isset($customer->referral_code))
-                <div><span class="font-semibold">Kode Referral:</span> <span class="text-amber-700">{{ $customer->referral_code }}</span></div>
-                @endif
+        <div class="section-title">Data Pengantin</div>
+        <div class="info-grid">
+            <div><b>Pengantin Pria:</b> {{ $customer->grooms_name ?? '-' }}</div>
+            <div><b>Pengantin Wanita:</b> {{ $customer->brides_name ?? '-' }}</div>
+            <div><b>Jumlah Tamu:</b> {{ $customer->guest_count ? $customer->guest_count . ' orang' : '-' }}</div>
+            <div><b>Tanggal Pernikahan:</b>
+                {{ \Carbon\Carbon::parse($customer->wedding_date ?? now())->isoFormat('D MMMM Y') }}
             </div>
+            <div><b>Nomor Telepon:</b> {{ $customer->phone_number ?? '-' }}</div>
+            @if(!empty($customer->referral_code))
+                <div><b>Kode Referral:</b> <span style="color:#b45309;">{{ $customer->referral_code }}</span></div>
+            @endif
         </div>
 
-        <!-- Venue Card -->
-        <div class="bg-gradient-to-r from-indigo-100 via-white to-amber-100 rounded-2xl shadow p-6 border border-indigo-50">
-            <h2 class="text-lg font-bold text-amber-700 mb-3 tracking-tight flex items-center gap-2">
-                <span class="material-icons align-bottom text-indigo-500">place</span>
-                Venue
-            </h2>
-            <div class="text-sm space-y-2">
-                <div><span class="font-semibold">Nama:</span> {{ $venue->nama ?? '-' }}</div>
-                <div><span class="font-semibold">Tipe:</span> {{ $venue->type ?? '-' }}</div>
-                <div><span class="font-semibold">Deskripsi:</span> {!! str($venue->deskripsi ?? '-')->sanitizeHtml() !!}</div>
-            </div>
-        </div>
+        <!-- Venue Info -->
+        <div class="section-title">Venue</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    @if($venue->gambar ?? false)
+                        <th>Gambar</th>
+                    @endif
+                    <th>Nama</th>
+                    <th>Tipe</th>
+                    @if($venue->kapasitas ?? false)
+                        <th>Kapasitas</th>
+                    @endif
+                    <th>Deskripsi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @if($venue->gambar ?? false)
+                        <td>
+                            <img src="{{ $venue->gambar }}" alt="Venue" class="img-thumb">
+                        </td>
+                    @endif
+                    <td>{{ $venue->nama ?? '-' }}</td>
+                    <td>{{ $venue->type ?? '-' }}</td>
+                    @if($venue->kapasitas ?? false)
+                        <td>{{ $venue->kapasitas }}</td>
+                    @endif
+                    <td>{!! str($venue->deskripsi ?? '-')->sanitizeHtml() !!}</td>
+                </tr>
+            </tbody>
+        </table>
 
-        <!-- Catering Card -->
+        <!-- Catering Info -->
         @if($catering)
-        <div class="bg-white rounded-2xl shadow p-6 border border-indigo-50">
-            <h2 class="text-lg font-bold text-pink-700 mb-3 tracking-tight flex items-center gap-2">
-                <span class="material-icons align-bottom text-amber-500">restaurant</span>
-                Catering
-            </h2>
-            <div class="text-sm space-y-2">
-                <div><span class="font-semibold">Nama:</span> {{ $catering->nama ?? '-' }}</div>
-                <div><span class="font-semibold">Deskripsi:</span> {!! str($catering->deskripsi ?? '-')->sanitizeHtml() !!}</div>
-            </div>
-        </div>
+        <div class="section-title">Catering</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Tipe</th>
+                    <th>Deskripsi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ $catering->nama ?? '-' }}</td>
+                    <td>{{ $catering->type ?? '-' }}</td>
+                    <td>{!! str($catering->deskripsi ?? '-')->sanitizeHtml() !!}</td>
+                </tr>
+            </tbody>
+        </table>
         @endif
 
-        <!-- Vendors Card -->
-        <div class="bg-white rounded-2xl shadow p-6 border border-indigo-50">
-            <h2 class="text-lg font-bold text-green-700 mb-3 tracking-tight flex items-center gap-2">
-                <span class="material-icons align-bottom text-indigo-500">people</span>
-                Vendors
-            </h2>
-            <div class="overflow-x-auto rounded border border-gray-100">
-                <table class="min-w-full table-auto bg-white">
-                    <thead class="bg-indigo-50 text-left">
-                        <tr>
-                            <th class="p-3 font-semibold text-indigo-700">Nama</th>
-                            <th class="p-3 font-semibold text-indigo-700">Deskripsi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($vendors as $vendor)
-                        <tr class="border-t">
-                            <td class="p-3">{{ $vendor->vendor->nama ?? '-' }}</td>
-                            <td class="p-3">{!! str($vendor->vendor->deskripsi ?? '-')->sanitizeHtml() !!}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <!-- Vendors -->
+        <div class="section-title">Vendors</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Deskripsi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($vendors as $v)
+                <tr>
+                    <td>{{ $v->vendor->nama ?? '-' }}</td>
+                    <td>{!! str($v->vendor->deskripsi ?? '-')->sanitizeHtml() !!}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-        <!-- Total Budget Highlight Card -->
-        <div class="bg-gradient-to-r from-amber-100 via-white to-indigo-100 shadow rounded-2xl py-5 px-6 text-center border-2 border-amber-200">
-            <h2 class="text-xl font-extrabold text-indigo-800 mb-1 tracking-tight">Total Budget</h2>
-            <div class="text-3xl text-amber-600 font-bold">IDR {{ number_format($total, 0, ',', '.') }}</div>
+        <!-- Total Budget -->
+        <div class="total-budget">
+            <h2>Total Budget</h2>
+            <div class="amount">IDR {{ number_format($total, 0, ',', '.') }}</div>
         </div>
     </div>
-@endsection
 </body>
 </html>

@@ -11,6 +11,10 @@ use App\Http\Controllers\TransactionFormController;
 //     return view('wizard.index');
 // });
 
-Route::get('/wizard/recap/{transaction}', [\App\Http\Controllers\WizardController::class, 'downloadRecapPdf'])->name('wizard.recap.pdf');
+Route::get('/wizard/recap/{transaction}', [WizardController::class, 'downloadRecapPdf'])->name('wizard.recap.pdf');
+
 
 Route::get('/{referral:slug?}', [WizardController::class, 'index']);
+
+// Recap page (make sure this is *after* any other conflicting routes!)
+Route::get('recap/{recap_link}', [WizardController::class, 'showRecap'])->name('wizard.recap');

@@ -177,9 +177,6 @@ class WizardController extends Controller
 
         return response()->json(['caterings' => $caterings]);
     }
-
-
-
     // 6. Get eligible discounts
     public function discounts(Request $request)
     {
@@ -230,8 +227,6 @@ class WizardController extends Controller
             ])
         ]);
     }
-
-
     public function storeTransaction(Request $request)
     {
         // 1. Validation
@@ -315,6 +310,18 @@ class WizardController extends Controller
             'total_dessert_price' => $totalDessert,
         ]);
 
+        $groomsSlug = \Str::slug($customer->grooms_name);
+        $weddingDate = date('Ymd', strtotime($customer->wedding_date));
+        $recapPath = $groomsSlug . '-' . $weddingDate;
+
+        $i = 1;
+        $uniqueRecapPath = $recapPath;
+        while (Transaction::where('recap_link', $uniqueRecapPath)->exists()) {
+            $uniqueRecapPath = $recapPath . '-' . $i++;
+        }
+        $transaction->recap_link = $uniqueRecapPath;
+        $transaction->save();
+
         // 6. Attach vendors to transaction
         foreach ($request->input('vendors', []) as $vendor) {
             $transaction->vendors()->create([
@@ -332,23 +339,44 @@ class WizardController extends Controller
         return response()->json([
             'success' => true,
             'transaction_id' => $transaction->id,
+            'recap_link' => $transaction->recap_link,  // Return the new recap link
             'total' => $finalTotal,
             'message' => 'Wedding transaction created!'
         ]);
     }
-
-    public function downloadRecapPdf($transactionId)
+    public function downloadRecapPdf(\App\Models\Transaction $transaction)
     {
-        $transaction = \App\Models\Transaction::with(['customer', 'venue', 'vendorCatering', 'vendors.vendor'])->findOrFail($transactionId);
-
+        $transaction->load(['customer', 'venue', 'vendorCatering', 'vendors.vendor']);
         $total = $transaction->total_estimated_price ?? 0;
-
         return Pdf::loadView('wizard.recap_pdf', [
             'customer' => $transaction->customer,
             'venue' => $transaction->venue,
             'catering' => $transaction->vendorCatering,
             'vendors' => $transaction->vendors,
             'total' => $total
-        ])->download('wedding_recap_' . $transactionId . '.pdf');
+        ])->download('wedding_recap_' . $transaction->id . '.pdf');
     }
+
+
+
+    public function showRecap($recap_link)
+    {
+        $transaction = \App\Models\Transaction::with([
+            'customer',
+            'venue',
+            'vendorCatering',
+            'vendors.vendor'
+        ])->where('recap_link', $recap_link)->firstOrFail();
+
+        return view('wizard.recap', [
+            'transaction' => $transaction, // <--- make sure to pass it!
+            'customer' => $transaction->customer,
+            'venue' => $transaction->venue,
+            'catering' => $transaction->vendorCatering,
+            'vendors' => $transaction->vendors,
+            'total' => $transaction->total_estimated_price ?? 0,
+        ]);
+    }
+
+
 }
