@@ -476,6 +476,18 @@ class WizardController extends Controller
             'total_dessert_price' => $totalDessert,
         ]);
 
+        $groomsSlug = \Str::slug($customer->grooms_name);
+        $weddingDate = date('Ymd', strtotime($customer->wedding_date));
+        $recapPath = $groomsSlug . '-' . $weddingDate;
+
+        $i = 1;
+        $uniqueRecapPath = $recapPath;
+        while (Transaction::where('recap_link', $uniqueRecapPath)->exists()) {
+            $uniqueRecapPath = $recapPath . '-' . $i++;
+        }
+        $transaction->recap_link = $uniqueRecapPath;
+        $transaction->save();
+
         // 8. Attach vendors to transaction
         foreach ($request->input('vendors', []) as $vendor) {
             $transaction->vendors()->create([
@@ -493,6 +505,7 @@ class WizardController extends Controller
         return response()->json([
             'success' => true,
             'transaction_id' => $transaction->id,
+            'recap_link' => $transaction->recap_link,
             'total' => $finalTotal,
             'message' => 'Wedding transaction created!'
         ]);
