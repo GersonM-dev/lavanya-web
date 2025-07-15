@@ -564,8 +564,9 @@ class TransactionResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('recap_link')
-                    ->label('Rekap Hasil')
-                    ->searchable(),
+                    ->label('Rekap Hasil')->prefix('lavanyaenterprise.id/')->searchable()->copyable()
+                    ->searchable()->copyMessage('Link Rekap disalin')->copyableState(fn(string $state): string => "lavanyaenterprise.id/{$state}")
+                    ->copyMessageDuration(1500),
 
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
