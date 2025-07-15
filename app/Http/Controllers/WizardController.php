@@ -227,6 +227,124 @@ class WizardController extends Controller
             ])
         ]);
     }
+    // public function storeTransaction(Request $request)
+    // {
+    //     // 1. Validation
+    //     $validated = $request->validate([
+    //         'customer.grooms_name' => 'required|string|max:100',
+    //         'customer.brides_name' => 'required|string|max:100',
+    //         'customer.guest_count' => 'required|integer|min:1',
+    //         'customer.wedding_date' => 'required|date|after_or_equal:today',
+    //         'customer.phone_number' => 'required|string|max:20',
+    //         'customer.refferal_code' => 'nullable|string|max:50',
+    //         'venue_id' => 'required|exists:venues,id',
+    //         'catering_id' => 'required|exists:caterings,id',
+    //         'vendors' => 'required|array|min:1',
+    //         'vendors.*.id' => 'required|exists:vendors,id',
+    //         'discount_ids' => 'nullable|array',
+    //         'discount_ids.*' => 'exists:discounts,id',
+    //     ]);
+
+    //     // 2. Create customer
+    //     $customer = Customer::create($request->input('customer'));
+
+    //     // 3. Get Venue, Catering, Vendors, Discounts
+    //     $venue = Venue::findOrFail($request->venue_id);
+    //     $catering = Catering::findOrFail($request->catering_id);
+    //     $vendors = Vendor::whereIn('id', collect($request->vendors)->pluck('id'))->get();
+    //     $discounts = Discount::whereIn('id', $request->input('discount_ids', []))->get();
+    //     $guestCount = $request->input('customer.guest_count');
+
+    //     // 4. Price Calculation
+    //     $venuePrice = $venue->harga;
+    //     $totalBuffet = $totalGubugan = $totalDessert = $cateringTotal = 0;
+
+    //     if ($catering->type === 'Hotel') {
+    //         $buffet = $catering->buffet_price ?? 0;
+    //         $gubugan = $catering->gubugan_price ?? 0;
+    //         $dessert = $catering->dessert_price ?? 0;
+    //         $totalFood = $guestCount * 3;
+    //         $totalBuffet = $buffet * ($guestCount * 0.5);
+    //         $totalGubugan = $gubugan * ($totalFood - ($guestCount * 0.5));
+    //         $totalDessert = $dessert * ($guestCount * 0.5);
+    //         $cateringTotal = $totalBuffet + $totalGubugan + $totalDessert;
+    //     } elseif ($catering->type === 'Resto') {
+    //         $buffet = $catering->buffet_price ?? 0;
+    //         $gubugan = $catering->gubugan_price ?? 0;
+    //         $dessert = $catering->dessert_price ?? 0;
+    //         $totalBuffet = $buffet * $guestCount;
+    //         $totalGubugan = $gubugan * $guestCount;
+    //         $totalDessert = $dessert * ($guestCount * 0.5);
+    //         $cateringTotal = $totalBuffet + $totalGubugan + $totalDessert;
+    //     } elseif ($catering->type === 'Basic') {
+    //         $cateringTotal = $catering->base_price * $guestCount;
+    //     }
+
+    //     $vendorTotal = $vendors->sum('harga');
+    //     $totalBeforeDiscount = $venuePrice + $cateringTotal + $vendorTotal;
+
+    //     // Calculate discount
+    //     $totalDiscount = 0;
+    //     foreach ($discounts as $discount) {
+    //         if ($discount->amount) {
+    //             $totalDiscount += $discount->amount;
+    //         } elseif ($discount->percentage) {
+    //             $totalDiscount += $totalBeforeDiscount * ($discount->percentage / 100);
+    //         }
+    //     }
+
+    //     $finalTotal = max($totalBeforeDiscount - $totalDiscount, 0);
+
+    //     // 5. Create Transaction
+    //     $transaction = Transaction::create([
+    //         'customer_id' => $customer->id,
+    //         'venue_id' => $venue->id,
+    //         'catering_id' => $catering->id,
+    //         'transaction_date' => now(),
+    //         'total_estimated_price' => $finalTotal,
+    //         'status' => $request->input('status', 'pending'),
+    //         'notes' => $request->input('notes'),
+    //         'catering_total_price' => $cateringTotal,
+    //         'total_buffet_price' => $totalBuffet,
+    //         'total_gubugan_price' => $totalGubugan,
+    //         'total_dessert_price' => $totalDessert,
+    //     ]);
+
+    //     $groomsSlug = \Str::slug($customer->grooms_name);
+    //     $weddingDate = date('Ymd', strtotime($customer->wedding_date));
+    //     $recapPath = $groomsSlug . '-' . $weddingDate;
+
+    //     $i = 1;
+    //     $uniqueRecapPath = $recapPath;
+    //     while (Transaction::where('recap_link', $uniqueRecapPath)->exists()) {
+    //         $uniqueRecapPath = $recapPath . '-' . $i++;
+    //     }
+    //     $transaction->recap_link = $uniqueRecapPath;
+    //     $transaction->save();
+
+    //     // 6. Attach vendors to transaction
+    //     foreach ($request->input('vendors', []) as $vendor) {
+    //         $transaction->vendors()->create([
+    //             'vendor_id' => $vendor['id'],
+    //             'estimated_price' => $vendor['estimated_price'] ?? 0,
+    //             'is_mandatory' => $vendor['is_mandatory'] ?? false,
+    //             'notes' => $vendor['notes'] ?? null,
+    //         ]);
+    //     }
+
+    //     // 7. Attach discounts
+    //     $transaction->discounts()->sync($request->input('discount_ids', []));
+
+    //     // 8. Response
+    //     return response()->json([
+    //         'success' => true,
+    //         'transaction_id' => $transaction->id,
+    //         'recap_link' => $transaction->recap_link,  // Return the new recap link
+    //         'total' => $finalTotal,
+    //         'message' => 'Wedding transaction created!'
+    //     ]);
+    // }
+
     public function storeTransaction(Request $request)
     {
         // 1. Validation
@@ -245,17 +363,65 @@ class WizardController extends Controller
             'discount_ids.*' => 'exists:discounts,id',
         ]);
 
-        // 2. Create customer
+        // 2. WhatsApp notification to admin (Fonnte)
+        try {
+            $grooms = $request->input('customer.grooms_name');
+            $brides = $request->input('customer.brides_name');
+            $date = $request->input('customer.wedding_date');
+            $guests = $request->input('customer.guest_count');
+            $phone = $request->input('customer.phone_number');
+
+            $message = "Wedding Baru!\n"
+                . "Pria: {$grooms}\n"
+                . "Wanita: {$brides}\n"
+                . "Tanggal: {$date}\n"
+                . "Tamu: {$guests}\n"
+                . "No HP: https://wa.me/" . (substr($phone, 0, 1) === '0' ? '62' . substr($phone, 1) : $phone);
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://api.fonnte.com/send',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => array(
+                    'target' => '082119079779', // Admin's phone (no plus sign)
+                    'message' => $message,
+                    'countryCode' => '62',
+                ),
+                CURLOPT_HTTPHEADER => array(
+                    'Authorization: 1DE6DXXKg79mL8ivtLkK', // <-- Use your actual token here
+                ),
+            ));
+
+            $response = curl_exec($curl);
+
+            if (curl_errno($curl)) {
+                \Log::error('Fonnte WhatsApp error: ' . curl_error($curl));
+            }
+            curl_close($curl);
+
+            \Log::info('Fonnte WhatsApp response: ' . $response);
+
+        } catch (\Exception $e) {
+            \Log::error('WhatsApp Notification failed: ' . $e->getMessage());
+        }
+
+        // 3. Create customer
         $customer = Customer::create($request->input('customer'));
 
-        // 3. Get Venue, Catering, Vendors, Discounts
+        // 4. Get Venue, Catering, Vendors, Discounts
         $venue = Venue::findOrFail($request->venue_id);
         $catering = Catering::findOrFail($request->catering_id);
         $vendors = Vendor::whereIn('id', collect($request->vendors)->pluck('id'))->get();
         $discounts = Discount::whereIn('id', $request->input('discount_ids', []))->get();
         $guestCount = $request->input('customer.guest_count');
 
-        // 4. Price Calculation
+        // 5. Price Calculation
         $venuePrice = $venue->harga;
         $totalBuffet = $totalGubugan = $totalDessert = $cateringTotal = 0;
 
@@ -283,7 +449,7 @@ class WizardController extends Controller
         $vendorTotal = $vendors->sum('harga');
         $totalBeforeDiscount = $venuePrice + $cateringTotal + $vendorTotal;
 
-        // Calculate discount
+        // 6. Calculate discount
         $totalDiscount = 0;
         foreach ($discounts as $discount) {
             if ($discount->amount) {
@@ -295,7 +461,7 @@ class WizardController extends Controller
 
         $finalTotal = max($totalBeforeDiscount - $totalDiscount, 0);
 
-        // 5. Create Transaction
+        // 7. Create Transaction
         $transaction = Transaction::create([
             'customer_id' => $customer->id,
             'venue_id' => $venue->id,
@@ -310,19 +476,7 @@ class WizardController extends Controller
             'total_dessert_price' => $totalDessert,
         ]);
 
-        $groomsSlug = \Str::slug($customer->grooms_name);
-        $weddingDate = date('Ymd', strtotime($customer->wedding_date));
-        $recapPath = $groomsSlug . '-' . $weddingDate;
-
-        $i = 1;
-        $uniqueRecapPath = $recapPath;
-        while (Transaction::where('recap_link', $uniqueRecapPath)->exists()) {
-            $uniqueRecapPath = $recapPath . '-' . $i++;
-        }
-        $transaction->recap_link = $uniqueRecapPath;
-        $transaction->save();
-
-        // 6. Attach vendors to transaction
+        // 8. Attach vendors to transaction
         foreach ($request->input('vendors', []) as $vendor) {
             $transaction->vendors()->create([
                 'vendor_id' => $vendor['id'],
@@ -332,18 +486,18 @@ class WizardController extends Controller
             ]);
         }
 
-        // 7. Attach discounts
+        // 9. Attach discounts
         $transaction->discounts()->sync($request->input('discount_ids', []));
 
-        // 8. Response
+        // 10. Response
         return response()->json([
             'success' => true,
             'transaction_id' => $transaction->id,
-            'recap_link' => $transaction->recap_link,  // Return the new recap link
             'total' => $finalTotal,
             'message' => 'Wedding transaction created!'
         ]);
     }
+
     public function downloadRecapPdf(\App\Models\Transaction $transaction)
     {
         $transaction->load(['customer', 'venue', 'vendorCatering', 'vendors.vendor']);
