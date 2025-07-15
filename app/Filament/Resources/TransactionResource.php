@@ -563,6 +563,10 @@ class TransactionResource extends Resource
                     ->money('idr')
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('recap_link')
+                    ->label('Rekap Hasil')
+                    ->searchable(),
+
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
                     ->options([
