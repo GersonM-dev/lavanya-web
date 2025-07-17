@@ -1,133 +1,138 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="max-w-xl mx-auto py-8">
+    <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-yellow-100 to-white">
+        <div class="w-full max-w-xl">
 
-        <!-- 0. LANDING PAGE -->
-        <div id="step-landing"
-            class="form-section active flex flex-col items-center justify-center min-h-[500px] bg-white rounded-lg shadow-lg p-6">
-            <!-- Logo -->
-            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-36 h-36 mb-8 mx-auto">
-            <!-- CTA Button -->
-            <button id="start-wizard-btn"
-                class="px-8 py-3 bg-indigo-600 text-white rounded-lg text-xl shadow-lg hover:bg-indigo-700 transition">
-                START
-            </button>
-        </div>
-
-        <!-- 1. CUSTOMER -->
-        <div id="step-customer" class="form-section active bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-4">Data Pengantin</h2>
-            <form id="customer-form" autocomplete="off">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-2">
-                    <div>
-                        <label>Nama Pengantin Pria</label>
-                        <input name="grooms_name" class="w-full rounded border px-3 py-2" required />
-                    </div>
-                    <div>
-                        <label>Nama Pengantin Wanita</label>
-                        <input name="brides_name" class="w-full rounded border px-3 py-2" required />
-                    </div>
-                    <div>
-                        <label>Jumlah Tamu</label>
-                        <input name="guest_count" type="number" min="1" class="w-full rounded border px-3 py-2" required />
-                    </div>
-                    <div>
-                        <label>Tanggal Pernikahan</label>
-                        <input name="wedding_date" type="date" class="w-full rounded border px-3 py-2" required />
-                    </div>
-                    <div>
-                        <label>Kode Referral</label>
-                        <input name="refferal_code" id="refferal_code_input" class="w-full rounded border px-3 py-2" />
-                    </div>
-                    <div>
-                        <label>No. HP</label>
-                        <input name="phone_number" class="w-full rounded border px-3 py-2" required />
-                    </div>
+            <!-- 0. LANDING PAGE -->
+            <div id="step-landing" class="form-section active flex flex-col items-center p-6">
+                <!-- Logo -->
+                <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-full max-w-2xl h-auto mb-8 mx-auto">
+                <!-- CTA Button Centered -->
+                <div class="w-full flex justify-center">
+                    <button id="start-wizard-btn"
+                        class="px-8 py-3 bg-amber-200 text-black rounded-lg text-xl shadow-lg hover:bg-amber-300 transition">
+                        START
+                    </button>
                 </div>
-                <div class="flex justify-end mt-6">
-                    <button type="submit" class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Next</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- 2. VENUE TYPE -->
-        <div id="step-venue-type" class="form-section bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-4">Pilih Tipe Venue</h2>
-            <div id="venue-types-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
-            <div class="flex justify-between mt-6">
-                <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
-                <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg" disabled>Next</button>
             </div>
-        </div>
 
-        <!-- 3. VENUE -->
-        <div id="step-venue" class="form-section bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-4">Pilih Venue</h2>
-            <div id="venues-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-            <div class="flex justify-between mt-6">
-                <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
-                <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg" disabled>Next</button>
+            <!-- 1. CUSTOMER -->
+            <div id="step-customer" class="form-section bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Data Pengantin</h2>
+                <form id="customer-form" autocomplete="off">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-2">
+                        <div>
+                            <label>Nama Pengantin Pria</label>
+                            <input name="grooms_name" class="w-full rounded border px-3 py-2" required />
+                        </div>
+                        <div>
+                            <label>Nama Pengantin Wanita</label>
+                            <input name="brides_name" class="w-full rounded border px-3 py-2" required />
+                        </div>
+                        <div>
+                            <label>Jumlah Tamu</label>
+                            <input name="guest_count" type="number" min="1" class="w-full rounded border px-3 py-2"
+                                required />
+                        </div>
+                        <div>
+                            <label>Tanggal Pernikahan</label>
+                            <input name="wedding_date" type="date" class="w-full rounded border px-3 py-2" required />
+                        </div>
+                        <div>
+                            <label>Kode Referral</label>
+                            <input name="refferal_code" id="refferal_code_input" class="w-full rounded border px-3 py-2" />
+                        </div>
+                        <div>
+                            <label>No. HP</label>
+                            <input name="phone_number" class="w-full rounded border px-3 py-2" required />
+                        </div>
+                    </div>
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Next</button>
+                    </div>
+                </form>
             </div>
-        </div>
 
-        <!-- 4. CATERING -->
-        <div id="step-catering" class="form-section bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-4">Pilih Catering</h2>
-            <div id="caterings-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-            <div class="flex justify-between mt-6">
-                <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
-                <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg" disabled>Next</button>
-            </div>
-        </div>
-
-        <!-- 5. VENDORS -->
-        <div id="step-vendors" class="form-section bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-1">Pilih Vendor Kategori <span id="vendor-category-name"></span></h2>
-            <div id="vendors-anim-wrapper">
-                <div id="vendors-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-            </div>
-            <div class="flex justify-between mt-6">
-                <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
-                <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Next</button>
-            </div>
-        </div>
-
-        <!-- 6. DISCOUNTS -->
-        <div id="step-discount" class="form-section bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-4">Pilih Diskon (jika ada)</h2>
-            <div id="discounts-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-            <div class="flex justify-between mt-6">
-                <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
-                <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Next</button>
-            </div>
-        </div>
-
-        <!-- 7. SUBMIT -->
-        <div id="step-transaction" class="form-section bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-bold mb-4">Konfirmasi & Submit</h2>
-            <form id="wedding-form" autocomplete="off">
-                <div class="text-sm text-gray-500 mb-2">Data Pengantin telah terisi otomatis.</div>
+            <!-- 2. VENUE TYPE -->
+            <div id="step-venue-type" class="form-section bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Pilih Tipe Venue</h2>
+                <div id="venue-types-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
                 <div class="flex justify-between mt-6">
-                    <button type="button" class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
-                    <button type="submit" class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Submit</button>
+                    <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
+                    <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg" disabled>Next</button>
                 </div>
-            </form>
-        </div>
+            </div>
 
-        <!-- SUCCESS -->
-        <div id="step-success" class="form-section text-center">
-            <h2 class="text-2xl font-bold mb-3">Terima kasih, data telah kami terima.</h2>
-            <p>Tim Marketing kami akan segera menghubungi</p>
-        </div>
+            <!-- 3. VENUE -->
+            <div id="step-venue" class="form-section bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Pilih Venue</h2>
+                <div id="venues-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div class="flex justify-between mt-6">
+                    <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
+                    <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg" disabled>Next</button>
+                </div>
+            </div>
 
-        <!-- Modal for Detail -->
-        <div id="detail-modal-backdrop" class="fixed inset-0 bg-black/40 z-50 hidden"></div>
-        <div id="detail-modal" class="fixed left-1/2 top-1/2 z-50 bg-white rounded-xl shadow-xl p-6 w-full max-w-lg hidden"
-            style="transform:translate(-50%,-50%)">
-            <button onclick="closeDetailModal()"
-                class="absolute top-2 right-3 text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
-            <div id="detail-modal-content"></div>
+            <!-- 4. CATERING -->
+            <div id="step-catering" class="form-section bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Pilih Catering</h2>
+                <div id="caterings-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div class="flex justify-between mt-6">
+                    <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
+                    <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg" disabled>Next</button>
+                </div>
+            </div>
+
+            <!-- 5. VENDORS -->
+            <div id="step-vendors" class="form-section bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-1">Pilih Vendor Kategori <span id="vendor-category-name"></span></h2>
+                <div id="vendors-anim-wrapper">
+                    <div id="vendors-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
+                    <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Next</button>
+                </div>
+            </div>
+
+            <!-- 6. DISCOUNTS -->
+            <div id="step-discount" class="form-section bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Pilih Diskon (jika ada)</h2>
+                <div id="discounts-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div class="flex justify-between mt-6">
+                    <button class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
+                    <button class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Next</button>
+                </div>
+            </div>
+
+            <!-- 7. SUBMIT -->
+            <div id="step-transaction" class="form-section bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4">Konfirmasi & Submit</h2>
+                <form id="wedding-form" autocomplete="off">
+                    <div class="text-sm text-gray-500 mb-2">Data Pengantin telah terisi otomatis.</div>
+                    <div class="flex justify-between mt-6">
+                        <button type="button" class="back-btn px-6 py-2 bg-gray-300 rounded-lg">Back</button>
+                        <button type="submit" class="next-btn px-6 py-2 bg-indigo-600 text-white rounded-lg">Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- SUCCESS -->
+            <div id="step-success" class="form-section text-center">
+                <h2 class="text-2xl font-bold mb-3">Terima kasih, data telah kami terima.</h2>
+                <p>Tim Marketing kami akan segera menghubungi</p>
+            </div>
+
+            <!-- Modal for Detail -->
+            <div id="detail-modal-backdrop" class="fixed inset-0 bg-black/40 z-50 hidden"></div>
+            <div id="detail-modal"
+                class="fixed left-1/2 top-1/2 z-50 bg-white rounded-xl shadow-xl p-6 w-full max-w-lg hidden"
+                style="transform:translate(-50%,-50%)">
+                <button onclick="closeDetailModal()"
+                    class="absolute top-2 right-3 text-gray-400 hover:text-gray-700 text-2xl leading-none">&times;</button>
+                <div id="detail-modal-content"></div>
+            </div>
         </div>
     </div>
 @endsection
@@ -135,14 +140,14 @@
 @push('styles')
     <style>
         .form-section {
-            display: none;
+            display: none !important;
             opacity: 0;
             transform: translateY(32px);
             transition: opacity 0.5s, transform 0.5s;
         }
 
         .form-section.active {
-            display: block;
+            display: block !important;
             opacity: 1;
             transform: translateY(0);
             z-index: 1;
@@ -219,7 +224,7 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                     card.innerHTML = `<img src="${type.image}" class="w-full h-36 object-cover rounded mb-2">
-                                                                            <div class="font-bold text-lg">${type.name}</div>`;
+                                                                                            <div class="font-bold text-lg">${type.name}</div>`;
                     card.onclick = () => {
                         window.wizard.venue_type = type.name;
                         [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -246,13 +251,13 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-amber-400 text-center transition';
                     card.innerHTML = `
-                                                                            <img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
-                                                                            <div class="font-bold text-lg">${venue.name}</div>
-                                                                            <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                                onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(venue))}', 'venue')">
-                                                                                Detail
-                                                                            </button>
-                                                                        `;
+                                                                                            <img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
+                                                                                            <div class="font-bold text-lg">${venue.name}</div>
+                                                                                            <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                                                                onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(venue))}', 'venue')">
+                                                                                                Detail
+                                                                                            </button>
+                                                                                        `;
                     card.onclick = function (e) {
                         if (e.target.classList.contains('detail-btn')) return; // don't select on detail button click
                         window.wizard.venue_id = venue.id;
@@ -287,14 +292,14 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `
-                                                                                <img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
-                                                                                <div class="font-bold">${vendor.name}</div>
-                                                                                ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}
-                                                                                <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                                    onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(vendor))}', 'vendor')">
-                                                                                    Detail
-                                                                                </button>
-                                                                            `;
+                                                                                                <img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
+                                                                                                <div class="font-bold">${vendor.name}</div>
+                                                                                                ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}
+                                                                                                <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                                                                    onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(vendor))}', 'vendor')">
+                                                                                                    Detail
+                                                                                                </button>
+                                                                                            `;
                         if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
                             card.classList.add('ring-4', 'ring-indigo-400');
                         }
@@ -326,14 +331,14 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `
-                                                                                <img src="${cat.image}" class="w-full h-28 object-cover rounded mb-2">
-                                                                                <div class="font-bold">${cat.name}</div>
-                                                                                <div class="text-xs text-gray-500 truncate">${cat.type}</div>
-                                                                                <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                                    onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(cat))}', 'catering')">
-                                                                                    Detail
-                                                                                </button>
-                                                                            `;
+                                                                                                <img src="${cat.image}" class="w-full h-28 object-cover rounded mb-2">
+                                                                                                <div class="font-bold">${cat.name}</div>
+                                                                                                <div class="text-xs text-gray-500 truncate">${cat.type}</div>
+                                                                                                <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                                                                    onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(cat))}', 'catering')">
+                                                                                                    Detail
+                                                                                                </button>
+                                                                                            `;
                         card.onclick = function (e) {
                             if (e.target.classList.contains('detail-btn')) return;
                             window.wizard.catering_id = cat.id;
@@ -366,8 +371,8 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-green-400 text-center transition';
                     card.innerHTML = `<div class="font-bold">${dis.name}</div>
-                                                                            <div class="text-xs">${dis.description || ''}</div>
-                                                                            <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
+                                                                                            <div class="text-xs">${dis.description || ''}</div>
+                                                                                            <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
                     card.onclick = () => {
                         const idx = window.wizard.discounts.findIndex(d => d === dis.id);
                         if (idx === -1) {
@@ -391,25 +396,25 @@
 
         function showDetailModal(item, type) {
             let html = `
-                                                    <div class="text-center">
-                                                        <!-- Images -->
-                                                        <div class="flex gap-2 justify-center mb-3">
-                                                            ${item.image ? `<img src="${item.image}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                            ${item.image2 ? `<img src="${item.image2}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                            ${item.image3 ? `<img src="${item.image3}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                        </div>
-                                                        <!-- Name/title -->
-                                                        <div class="font-bold text-xl mb-1">${item.name}</div>
-                                                        <!-- Type (only for catering) -->
-                                                        ${type === 'catering' ? `<div class="text-xs text-gray-500 mb-2">${item.type || ''}</div>` : ''}
-                                                        <!-- Capacity (only for venue) -->
-                                                        ${type === 'venue' && item.capacity ? `<div class="text-gray-500 text-sm mb-2">Kapasitas: ${item.capacity}</div>` : ''}
-                                                        <!-- Description -->
-                                                        <div class="mb-3">${item.description || ''}</div>
-                                                        <!-- Portfolio link -->
-                                                        ${item.portofolio_link ? `<a href="${item.portofolio_link}" class="text-blue-600 underline mb-2 block" target="_blank">Lihat Portofolio</a>` : ''}
-                                                    </div>
-                                                `;
+                                                                    <div class="text-center">
+                                                                        <!-- Images -->
+                                                                        <div class="flex gap-2 justify-center mb-3">
+                                                                            ${item.image ? `<img src="${item.image}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                                                                            ${item.image2 ? `<img src="${item.image2}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                                                                            ${item.image3 ? `<img src="${item.image3}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                                                                        </div>
+                                                                        <!-- Name/title -->
+                                                                        <div class="font-bold text-xl mb-1">${item.name}</div>
+                                                                        <!-- Type (only for catering) -->
+                                                                        ${type === 'catering' ? `<div class="text-xs text-gray-500 mb-2">${item.type || ''}</div>` : ''}
+                                                                        <!-- Capacity (only for venue) -->
+                                                                        ${type === 'venue' && item.capacity ? `<div class="text-gray-500 text-sm mb-2">Kapasitas: ${item.capacity}</div>` : ''}
+                                                                        <!-- Description -->
+                                                                        <div class="mb-3">${item.description || ''}</div>
+                                                                        <!-- Portfolio link -->
+                                                                        ${item.portofolio_link ? `<a href="${item.portofolio_link}" class="text-blue-600 underline mb-2 block" target="_blank">Lihat Portofolio</a>` : ''}
+                                                                    </div>
+                                                                `;
             document.getElementById('detail-modal-content').innerHTML = html;
             document.getElementById('detail-modal').classList.remove('hidden');
             document.getElementById('detail-modal-backdrop').classList.remove('hidden');
@@ -423,7 +428,7 @@
         document.getElementById('detail-modal-backdrop').onclick = closeDetailModal;
 
         document.addEventListener('DOMContentLoaded', function () {
-            animateSectionTransition('step-landing'); // Show landing page first
+            animateSectionTransition('step-landing');
 
             document.getElementById('start-wizard-btn').onclick = function () {
                 animateSectionTransition('step-customer', 'left');

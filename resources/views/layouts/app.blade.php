@@ -24,14 +24,14 @@
         }
 
         .form-section {
-            display: none;
+            display: none !important;
             opacity: 0;
             transform: translateY(32px);
             transition: opacity 0.5s, transform 0.5s;
         }
 
         .form-section.active {
-            display: block;
+            display: block !important;
             opacity: 1;
             transform: translateY(0);
             z-index: 1;
@@ -62,9 +62,10 @@
 </head>
 
 <body class="min-h-screen flex flex-col">
-    <main class="flex-1 flex flex-col justify-center items-center py-10">
+    <main>
         @yield('content')
     </main>
+
     <footer class="text-center text-sm py-4 text-gray-400 border-t border-gray-100 bg-white">
         &copy; {{ date('Y') }} Lavanya Wedding Organizer
     </footer>
