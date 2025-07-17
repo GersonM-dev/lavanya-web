@@ -5,9 +5,9 @@
 @endpush
 
 @section('content')
-<div class="w-full max-w-2xl mx-auto py-12 px-2">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 border border-amber-100"
-         style="min-height: 700px"
+<div class="w-full max-w-4xl mx-auto py-12 px-8">
+    <div class="bg-white rounded-2xl shadow-2xl p-12 border border-amber-100"
+         style="min-height: 700px; width: 800px; margin: 0 auto;"
          data-aos="fade-in">
         <!-- Header -->
         <div class="text-center mb-8">
@@ -23,7 +23,7 @@
                 <div class="text-lg font-bold text-amber-700 mb-2 flex items-center gap-2 border-t border-amber-400 pt-4">
                     Data Pengantin
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8 text-sm">
+                <div class="grid grid-cols-2 gap-y-2 gap-x-8 text-sm">
                     <div><span class="font-semibold">Pengantin Pria:</span> <span class="text-gray-700">{{ $customer->grooms_name ?? '-' }}</span></div>
                     <div><span class="font-semibold">Pengantin Wanita:</span> <span class="text-gray-700">{{ $customer->brides_name ?? '-' }}</span></div>
                     <div>
@@ -45,17 +45,17 @@
                 <div class="text-lg font-bold text-amber-700 mb-2 flex items-center gap-2 border-t border-amber-400 pt-4">
                     Venue
                 </div>
-                <div class="overflow-x-auto rounded border border-amber-300">
-                    <table class="min-w-full table-auto bg-white">
+                <div class="rounded border border-amber-300" style="width: 100%;">
+                    <table class="w-full table-fixed bg-white">
                         <thead class="bg-amber-100 text-left">
                             <tr>
                                 @if($venue->gambar ?? false)
-                                    <th class="p-3 font-semibold text-amber-700">Gambar</th>
+                                    <th class="p-3 font-semibold text-amber-700" style="width: 200px;">Gambar</th>
                                 @endif
-                                <th class="p-3 font-semibold text-amber-700">Nama</th>
-                                <th class="p-3 font-semibold text-amber-700">Tipe</th>
+                                <th class="p-3 font-semibold text-amber-700" style="width: 150px;">Nama</th>
+                                <th class="p-3 font-semibold text-amber-700" style="width: 100px;">Tipe</th>
                                 @if($venue->kapasitas ?? false)
-                                    <th class="p-3 font-semibold text-amber-700">Kapasitas</th>
+                                    <th class="p-3 font-semibold text-amber-700" style="width: 100px;">Kapasitas</th>
                                 @endif
                                 <th class="p-3 font-semibold text-amber-700">Deskripsi</th>
                             </tr>
@@ -86,12 +86,12 @@
                 <div class="text-lg font-bold text-amber-700 mb-2 flex items-center gap-2 border-t border-amber-400 pt-4">
                     Catering
                 </div>
-                <div class="overflow-x-auto rounded border border-amber-300">
-                    <table class="min-w-full table-auto bg-white">
+                <div class="rounded border border-amber-300" style="width: 100%;">
+                    <table class="w-full table-fixed bg-white">
                         <thead class="bg-amber-100 text-left">
                             <tr>
-                                <th class="p-3 font-semibold text-amber-700">Nama</th>
-                                <th class="p-3 font-semibold text-amber-700">Tipe</th>
+                                <th class="p-3 font-semibold text-amber-700" style="width: 200px;">Nama</th>
+                                <th class="p-3 font-semibold text-amber-700" style="width: 150px;">Tipe</th>
                                 <th class="p-3 font-semibold text-amber-700">Deskripsi</th>
                             </tr>
                         </thead>
@@ -112,11 +112,11 @@
                 <div class="text-lg font-bold text-amber-700 mb-2 flex items-center gap-2 border-t border-amber-400 pt-4">
                     Vendors
                 </div>
-                <div class="overflow-x-auto rounded border border-amber-300">
-                    <table class="min-w-full table-auto bg-white">
+                <div class="rounded border border-amber-300" style="width: 100%;">
+                    <table class="w-full table-fixed bg-white">
                         <thead class="bg-amber-100 text-left">
                             <tr>
-                                <th class="p-3 font-semibold text-amber-700">Nama</th>
+                                <th class="p-3 font-semibold text-amber-700" style="width: 250px;">Nama</th>
                                 <th class="p-3 font-semibold text-amber-700">Deskripsi</th>
                             </tr>
                         </thead>
