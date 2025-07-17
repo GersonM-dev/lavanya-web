@@ -2,6 +2,19 @@
 
 @section('content')
     <div class="max-w-xl mx-auto py-8">
+
+        <!-- 0. LANDING PAGE -->
+        <div id="step-landing"
+            class="form-section active flex flex-col items-center justify-center min-h-[500px] bg-white rounded-lg shadow-lg p-6">
+            <!-- Logo -->
+            <img src="{{ asset('images/logo.jpg') }}" alt="Logo" class="w-36 h-36 mb-8 mx-auto">
+            <!-- CTA Button -->
+            <button id="start-wizard-btn"
+                class="px-8 py-3 bg-indigo-600 text-white rounded-lg text-xl shadow-lg hover:bg-indigo-700 transition">
+                START
+            </button>
+        </div>
+
         <!-- 1. CUSTOMER -->
         <div id="step-customer" class="form-section active bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-bold mb-4">Data Pengantin</h2>
@@ -206,7 +219,7 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                     card.innerHTML = `<img src="${type.image}" class="w-full h-36 object-cover rounded mb-2">
-                                                                    <div class="font-bold text-lg">${type.name}</div>`;
+                                                                            <div class="font-bold text-lg">${type.name}</div>`;
                     card.onclick = () => {
                         window.wizard.venue_type = type.name;
                         [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -233,13 +246,13 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-amber-400 text-center transition';
                     card.innerHTML = `
-                                                                    <img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
-                                                                    <div class="font-bold text-lg">${venue.name}</div>
-                                                                    <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                        onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(venue))}', 'venue')">
-                                                                        Detail
-                                                                    </button>
-                                                                `;
+                                                                            <img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
+                                                                            <div class="font-bold text-lg">${venue.name}</div>
+                                                                            <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                                                onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(venue))}', 'venue')">
+                                                                                Detail
+                                                                            </button>
+                                                                        `;
                     card.onclick = function (e) {
                         if (e.target.classList.contains('detail-btn')) return; // don't select on detail button click
                         window.wizard.venue_id = venue.id;
@@ -274,14 +287,14 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `
-                                                                        <img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
-                                                                        <div class="font-bold">${vendor.name}</div>
-                                                                        ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}
-                                                                        <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                            onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(vendor))}', 'vendor')">
-                                                                            Detail
-                                                                        </button>
-                                                                    `;
+                                                                                <img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
+                                                                                <div class="font-bold">${vendor.name}</div>
+                                                                                ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}
+                                                                                <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                                                    onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(vendor))}', 'vendor')">
+                                                                                    Detail
+                                                                                </button>
+                                                                            `;
                         if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
                             card.classList.add('ring-4', 'ring-indigo-400');
                         }
@@ -313,14 +326,14 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `
-                                                                        <img src="${cat.image}" class="w-full h-28 object-cover rounded mb-2">
-                                                                        <div class="font-bold">${cat.name}</div>
-                                                                        <div class="text-xs text-gray-500 truncate">${cat.type}</div>
-                                                                        <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                            onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(cat))}', 'catering')">
-                                                                            Detail
-                                                                        </button>
-                                                                    `;
+                                                                                <img src="${cat.image}" class="w-full h-28 object-cover rounded mb-2">
+                                                                                <div class="font-bold">${cat.name}</div>
+                                                                                <div class="text-xs text-gray-500 truncate">${cat.type}</div>
+                                                                                <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                                                    onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(cat))}', 'catering')">
+                                                                                    Detail
+                                                                                </button>
+                                                                            `;
                         card.onclick = function (e) {
                             if (e.target.classList.contains('detail-btn')) return;
                             window.wizard.catering_id = cat.id;
@@ -353,8 +366,8 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-green-400 text-center transition';
                     card.innerHTML = `<div class="font-bold">${dis.name}</div>
-                                                                    <div class="text-xs">${dis.description || ''}</div>
-                                                                    <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
+                                                                            <div class="text-xs">${dis.description || ''}</div>
+                                                                            <div class="text-indigo-700 font-semibold mb-1">Potongan: Rp${(dis.amount || 0).toLocaleString()}</div>`;
                     card.onclick = () => {
                         const idx = window.wizard.discounts.findIndex(d => d === dis.id);
                         if (idx === -1) {
@@ -378,25 +391,25 @@
 
         function showDetailModal(item, type) {
             let html = `
-                                            <div class="text-center">
-                                                <!-- Images -->
-                                                <div class="flex gap-2 justify-center mb-3">
-                                                    ${item.image ? `<img src="${item.image}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                    ${item.image2 ? `<img src="${item.image2}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                    ${item.image3 ? `<img src="${item.image3}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                </div>
-                                                <!-- Name/title -->
-                                                <div class="font-bold text-xl mb-1">${item.name}</div>
-                                                <!-- Type (only for catering) -->
-                                                ${type === 'catering' ? `<div class="text-xs text-gray-500 mb-2">${item.type || ''}</div>` : ''}
-                                                <!-- Capacity (only for venue) -->
-                                                ${type === 'venue' && item.capacity ? `<div class="text-gray-500 text-sm mb-2">Kapasitas: ${item.capacity}</div>` : ''}
-                                                <!-- Description -->
-                                                <div class="mb-3">${item.description || ''}</div>
-                                                <!-- Portfolio link -->
-                                                ${item.portofolio_link ? `<a href="${item.portofolio_link}" class="text-blue-600 underline mb-2 block" target="_blank">Lihat Portofolio</a>` : ''}
-                                            </div>
-                                        `;
+                                                    <div class="text-center">
+                                                        <!-- Images -->
+                                                        <div class="flex gap-2 justify-center mb-3">
+                                                            ${item.image ? `<img src="${item.image}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                                                            ${item.image2 ? `<img src="${item.image2}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                                                            ${item.image3 ? `<img src="${item.image3}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
+                                                        </div>
+                                                        <!-- Name/title -->
+                                                        <div class="font-bold text-xl mb-1">${item.name}</div>
+                                                        <!-- Type (only for catering) -->
+                                                        ${type === 'catering' ? `<div class="text-xs text-gray-500 mb-2">${item.type || ''}</div>` : ''}
+                                                        <!-- Capacity (only for venue) -->
+                                                        ${type === 'venue' && item.capacity ? `<div class="text-gray-500 text-sm mb-2">Kapasitas: ${item.capacity}</div>` : ''}
+                                                        <!-- Description -->
+                                                        <div class="mb-3">${item.description || ''}</div>
+                                                        <!-- Portfolio link -->
+                                                        ${item.portofolio_link ? `<a href="${item.portofolio_link}" class="text-blue-600 underline mb-2 block" target="_blank">Lihat Portofolio</a>` : ''}
+                                                    </div>
+                                                `;
             document.getElementById('detail-modal-content').innerHTML = html;
             document.getElementById('detail-modal').classList.remove('hidden');
             document.getElementById('detail-modal-backdrop').classList.remove('hidden');
@@ -410,7 +423,11 @@
         document.getElementById('detail-modal-backdrop').onclick = closeDetailModal;
 
         document.addEventListener('DOMContentLoaded', function () {
-            animateSectionTransition('step-customer');
+            animateSectionTransition('step-landing'); // Show landing page first
+
+            document.getElementById('start-wizard-btn').onclick = function () {
+                animateSectionTransition('step-customer', 'left');
+            };
 
             // Customer Info: Next
             document.getElementById('customer-form').onsubmit = function (e) {
