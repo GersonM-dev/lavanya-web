@@ -158,11 +158,15 @@
                             IDR {{ number_format($total, 0, ',', '.') }}
                         </div>
                     @endif
+                    <div class="text-xs text-gray-400 mt-2">
+                        *Harga dapat berubah sewaktu-waktu
+                    </div>
                     <a href="{{ route('wizard.recap.pdf', ['transaction' => $transaction->id]) }}" target="_blank"
                         class="inline-block mt-2 bg-amber-600 text-white px-5 py-2 rounded-xl shadow hover:bg-amber-700 transition">
                         Download PDF
                     </a>
                 </div>
+
 
             </div>
         </div>

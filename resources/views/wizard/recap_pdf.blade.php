@@ -232,6 +232,9 @@
                     IDR {{ number_format($total, 0, ',', '.') }}
                 </div>
             @endif
+            <div style="font-size:12px; color:#888888; margin-top:10px;">
+                *Harga dapat berubah sewaktu-waktu
+            </div>
         </div>
 
     </div>
