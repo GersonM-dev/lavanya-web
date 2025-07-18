@@ -412,7 +412,7 @@
                                                                             <!-- Description -->
                                                                             <div class="mb-3">${item.description || ''}</div>
                                                                             <!-- Portfolio link -->
-                                                                            ${item.portofolio_link ? `<a href="${item.portofolio_link}" class="text-blue-600 underline mb-2 block" target="_blank">Lihat Portofolio</a>` : ''}
+                                                                            <a href="${item.portofolio_link}" class="text-blue-600 underline mb-2 block" target="_blank">Lihat Portofolio</a>
                                                                         </div>
                                                                     `;
             document.getElementById('detail-modal-content').innerHTML = html;
