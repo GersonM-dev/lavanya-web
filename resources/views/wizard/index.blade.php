@@ -223,8 +223,12 @@
                 res.data.types.forEach(type => {
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
-                    card.innerHTML = `<img src="${type.image}" class="w-full h-36 object-cover rounded mb-2">
-                                                                                                <div class="font-bold text-lg">${type.name}</div>`;
+                    card.innerHTML = `
+                                        <div class="aspect-[4/3] w-full rounded mb-2 overflow-hidden">
+                                            <img src="${type.image}" class="w-full h-full object-cover" />
+                                        </div>
+                                        <div class="font-bold text-lg">${type.name}</div>
+                                    `;
                     card.onclick = () => {
                         window.wizard.venue_type = type.name;
                         [...container.children].forEach(c => c.classList.remove('ring-4', 'ring-indigo-400'));
@@ -251,13 +255,15 @@
                     const card = document.createElement('div');
                     card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-amber-400 text-center transition';
                     card.innerHTML = `
-                                                                                                <img src="${venue.image}" class="w-full h-36 object-cover rounded mb-2">
-                                                                                                <div class="font-bold text-lg">${venue.name}</div>
-                                                                                                <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                                                    onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(venue))}', 'venue')">
-                                                                                                    Detail
-                                                                                                </button>
-                                                                                            `;
+                                        <div class="aspect-[4/3] w-full rounded mb-2 overflow-hidden">
+                                            <img src="${venue.image}" class="w-full h-full object-cover" />
+                                        </div>
+                                        <div class="font-bold text-lg">${venue.name}</div>
+                                        <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                            onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(venue))}', 'venue')">
+                                            Detail
+                                        </button>
+                                    `;
                     card.onclick = function (e) {
                         if (e.target.classList.contains('detail-btn')) return; // don't select on detail button click
                         window.wizard.venue_id = venue.id;
@@ -292,14 +298,16 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `
-                                                                                                    <img src="${vendor.image}" class="w-full h-28 object-cover rounded mb-2">
-                                                                                                    <div class="font-bold">${vendor.name}</div>
-                                                                                                    ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}
-                                                                                                    <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                                                        onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(vendor))}', 'vendor')">
-                                                                                                        Detail
-                                                                                                    </button>
-                                                                                                `;
+                                            <div class="aspect-[4/3] w-full rounded mb-2 overflow-hidden">
+                                                <img src="${vendor.image}" class="w-full h-full object-cover" />
+                                            </div>
+                                            <div class="font-bold">${vendor.name}</div>
+                                            ${vendor.is_mandatory ? '<span class="text-xs text-red-600 font-semibold">WAJIB</span>' : ''}
+                                            <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(vendor))}', 'vendor')">
+                                                Detail
+                                            </button>
+                                        `;
                         if (window.wizard.vendors[cat.id].find(v => v.id === vendor.id)) {
                             card.classList.add('ring-4', 'ring-indigo-400');
                         }
@@ -331,14 +339,16 @@
                         const card = document.createElement('div');
                         card.className = 'cursor-pointer p-4 rounded-lg shadow hover:ring-4 ring-indigo-400 text-center transition';
                         card.innerHTML = `
-                                                                                                    <img src="${cat.image}" class="w-full h-28 object-cover rounded mb-2">
-                                                                                                    <div class="font-bold">${cat.name}</div>
-                                                                                                    <div class="text-xs text-gray-500 truncate">${cat.type}</div>
-                                                                                                    <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
-                                                                                                        onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(cat))}', 'catering')">
-                                                                                                        Detail
-                                                                                                    </button>
-                                                                                                `;
+                                            <div class="aspect-[4/3] w-full rounded mb-2 overflow-hidden">
+                                                <img src="${cat.image}" class="w-full h-full object-cover" />
+                                            </div>
+                                            <div class="font-bold">${cat.name}</div>
+                                            <div class="text-xs text-gray-500 truncate">${cat.type}</div>
+                                            <button type="button" class="detail-btn mt-2 px-3 py-1 rounded bg-indigo-500 text-white text-xs"
+                                                onclick="showDetailModalFromBtn(event, '${encodeURIComponent(JSON.stringify(cat))}', 'catering')">
+                                                Detail
+                                            </button>
+                                        `;
                         card.onclick = function (e) {
                             if (e.target.classList.contains('detail-btn')) return;
                             window.wizard.catering_id = cat.id;
@@ -395,26 +405,63 @@
         }
 
         function showDetailModal(item, type) {
+            // Support both possible property spellings for description and portfolio
+            const desc = item.description || item.deskripsi || '';
+            const portfolio = item.portofolio_link || item.portfolio_link || '';
+
+            // Responsive grid for up to 3 images, each with 4:3 aspect ratio
+            let imagesHtml = '';
+            [item.image, item.image2, item.image3].forEach(img => {
+                if (img) {
+                    imagesHtml += `
+                        <div class="aspect-[4/3] w-40 bg-gray-100 rounded-lg overflow-hidden shadow">
+                            <img src="${img}" class="w-full h-full object-cover" />
+                        </div>
+                    `;
+                }
+            });
+
+            // Badges for type, capacity, or "WAJIB"
+            let infoBadges = '';
+            if (type === 'catering' && item.type) {
+                infoBadges += `<span class="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold mb-2">${item.type}</span>`;
+            }
+            if (type === 'venue' && item.capacity) {
+                infoBadges += `<span class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold mb-2 ml-2">Kapasitas: ${item.capacity}</span>`;
+            }
+            if (type === 'vendor' && item.is_mandatory) {
+                infoBadges += `<span class="inline-block bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs font-semibold mb-2 ml-2">WAJIB</span>`;
+            }
+
+            // Price badge if available
+            // let priceBadge = '';
+            // if (typeof item.price !== 'undefined' && item.price !== null && item.price !== '') {
+            //     priceBadge = `<span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold mb-2 ml-2">Rp${Number(item.price).toLocaleString()}</span>`;
+            // }
+
+            // Portfolio link (only if exists)
+            let portfolioHtml = '';
+            if (portfolio) {
+                portfolioHtml = `<a href="${portfolio}" class="text-blue-600 underline hover:text-blue-800 mb-2 inline-block mt-3 transition" target="_blank">Lihat Portofolio</a>`;
+            }
+
             let html = `
-                                                                        <div class="text-center">
-                                                                            <!-- Images -->
-                                                                            <div class="flex gap-2 justify-center mb-3">
-                                                                                ${item.image ? `<img src="${item.image}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                                                ${item.image2 ? `<img src="${item.image2}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                                                ${item.image3 ? `<img src="${item.image3}" class="w-48 h-32 object-cover rounded mx-auto">` : ''}
-                                                                            </div>
-                                                                            <!-- Name/title -->
-                                                                            <div class="font-bold text-xl mb-1">${item.name}</div>
-                                                                            <!-- Type (only for catering) -->
-                                                                            ${type === 'catering' ? `<div class="text-xs text-gray-500 mb-2">${item.type || ''}</div>` : ''}
-                                                                            <!-- Capacity (only for venue) -->
-                                                                            ${type === 'venue' && item.capacity ? `<div class="text-gray-500 text-sm mb-2">Kapasitas: ${item.capacity}</div>` : ''}
-                                                                            <!-- Description -->
-                                                                            <div class="mb-3">${item.description || ''}</div>
-                                                                            <!-- Portfolio link -->
-                                                                            <a href="${item.portofolio_link}" class="text-blue-600 underline mb-2 block" target="_blank">Lihat Portofolio</a>
-                                                                        </div>
-                                                                    `;
+                <div class="text-center px-1">
+                    <!-- Images grid -->
+                    <div class="flex flex-wrap gap-2 justify-center mb-4">
+                        ${imagesHtml || `<div class="w-40 aspect-[4/3] flex items-center justify-center bg-gray-50 rounded">No Image</div>`}
+                    </div>
+                    <!-- Title -->
+                    <div class="font-bold text-xl mb-1">${item.name || ''}</div>
+                    <!-- Info badges -->
+                    <div class="flex flex-wrap gap-2 justify-center mb-2">${infoBadges}${priceBadge}</div>
+                    <!-- Description -->
+                    <div class="mb-3 text-gray-700 max-h-40 overflow-auto px-1" style="word-break:break-word;">${desc}</div>
+                    <!-- Portfolio link -->
+                    ${portfolioHtml}
+                </div>
+            `;
+
             document.getElementById('detail-modal-content').innerHTML = html;
             document.getElementById('detail-modal').classList.remove('hidden');
             document.getElementById('detail-modal-backdrop').classList.remove('hidden');
