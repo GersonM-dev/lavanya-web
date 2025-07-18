@@ -68,6 +68,7 @@ class WizardController extends Controller
                 'description' => $venue->deskripsi,
                 'price' => $venue->harga,
                 'location' => $venue->location ?? '',
+                'portofolio_link' => $venue->portofolio_link, // <-- Add this line!
             ];
         });
 
@@ -133,6 +134,7 @@ class WizardController extends Controller
                 'price' => $v->harga,
                 'description' => $v->deskripsi,
                 'is_mandatory' => (bool) $v->is_mandatory,
+                'portofolio_link' => $v->portofolio_link, // <-- Add this line!
             ];
         });
 
@@ -172,6 +174,7 @@ class WizardController extends Controller
                 'gubugan_price' => $c->gubugan_price,
                 'dessert_price' => $c->dessert_price,
                 'base_price' => $c->base_price,
+                'portofolio_link' => $c->portofolio_link, // <-- Add this line!
             ];
         });
 
