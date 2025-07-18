@@ -433,12 +433,6 @@
                 infoBadges += `<span class="inline-block bg-red-100 text-red-600 px-3 py-1 rounded-full text-xs font-semibold mb-2 ml-2">WAJIB</span>`;
             }
 
-            // Price badge if available
-            let priceBadge = '';
-            if (typeof item.price !== 'undefined' && item.price !== null && item.price !== '') {
-                priceBadge = `<span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold mb-2 ml-2">Rp${Number(item.price).toLocaleString()}</span>`;
-            }
-
             // Portfolio link (only if exists)
             let portfolioHtml = '';
             if (portfolio) {
@@ -454,7 +448,7 @@
                     <!-- Title -->
                     <div class="font-bold text-xl mb-1">${item.name || ''}</div>
                     <!-- Info badges -->
-                    <div class="flex flex-wrap gap-2 justify-center mb-2">${infoBadges}${priceBadge}</div>
+                    <div class="flex flex-wrap gap-2 justify-center mb-2">${infoBadges}</div>
                     <!-- Description -->
                     <div class="mb-3 text-gray-700 max-h-40 overflow-auto px-1" style="word-break:break-word;">${desc}</div>
                     <!-- Portfolio link -->
@@ -466,6 +460,7 @@
             document.getElementById('detail-modal').classList.remove('hidden');
             document.getElementById('detail-modal-backdrop').classList.remove('hidden');
         }
+
 
         function closeDetailModal() {
             document.getElementById('detail-modal').classList.add('hidden');
