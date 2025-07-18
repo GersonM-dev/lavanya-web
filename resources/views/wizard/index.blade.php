@@ -434,10 +434,10 @@
             }
 
             // Price badge if available
-            // let priceBadge = '';
-            // if (typeof item.price !== 'undefined' && item.price !== null && item.price !== '') {
-            //     priceBadge = `<span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold mb-2 ml-2">Rp${Number(item.price).toLocaleString()}</span>`;
-            // }
+            let priceBadge = '';
+            if (typeof item.price !== 'undefined' && item.price !== null && item.price !== '') {
+                priceBadge = `<span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold mb-2 ml-2">Rp${Number(item.price).toLocaleString()}</span>`;
+            }
 
             // Portfolio link (only if exists)
             let portfolioHtml = '';
