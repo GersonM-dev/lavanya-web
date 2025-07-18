@@ -230,6 +230,7 @@ class WizardController extends Controller
             ])
         ]);
     }
+
     // public function storeTransaction(Request $request)
     // {
     //     // 1. Validation
@@ -471,6 +472,7 @@ class WizardController extends Controller
             'catering_id' => $catering->id,
             'transaction_date' => now(),
             'total_estimated_price' => $finalTotal,
+            'total_before_discount' => $totalBeforeDiscount, // <-- add this line!
             'status' => $request->input('status', 'pending'),
             'notes' => $request->input('notes'),
             'catering_total_price' => $cateringTotal,
@@ -513,22 +515,20 @@ class WizardController extends Controller
             'message' => 'Wedding transaction created!'
         ]);
     }
-
     public function downloadRecapPdf(\App\Models\Transaction $transaction)
     {
         $transaction->load(['customer', 'venue', 'vendorCatering', 'vendors.vendor']);
         $total = $transaction->total_estimated_price ?? 0;
+        $total_before_discount = $transaction->total_before_discount ?? 0; // <-- add this
         return Pdf::loadView('wizard.recap_pdf', [
             'customer' => $transaction->customer,
             'venue' => $transaction->venue,
             'catering' => $transaction->vendorCatering,
             'vendors' => $transaction->vendors,
-            'total' => $total
+            'total' => $total,
+            'total_before_discount' => $total_before_discount, // <-- add this
         ])->download('wedding_recap_' . $transaction->id . '.pdf');
     }
-
-
-
     public function showRecap($recap_link)
     {
         $transaction = \App\Models\Transaction::with([
@@ -545,6 +545,7 @@ class WizardController extends Controller
             'catering' => $transaction->vendorCatering,
             'vendors' => $transaction->vendors,
             'total' => $transaction->total_estimated_price ?? 0,
+            'total_before_discount' => $transaction->total_before_discount ?? 0,
         ]);
     }
 
