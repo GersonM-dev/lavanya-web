@@ -22,7 +22,7 @@
             background: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%);
             min-height: 100vh;
             /* Add wallpaper as a centered, covered background */
-            background-image: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%), url('/bg.png');
+            background-image: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%), url('images');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -46,7 +46,7 @@
                 right: 0;
                 bottom: 0;
                 z-index: -1;
-                background: url('/bg.png') no-repeat center center;
+                background: url('images/bg.png') no-repeat center center;
                 background-size: cover;
                 transform: rotate(90deg);
                 /* Ensure image covers whole body even after rotate */
