@@ -21,6 +21,39 @@
             font-family: 'Cinzel', serif;
             background: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%);
             min-height: 100vh;
+            /* Add wallpaper as a centered, covered background */
+            background-image: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%), url('/bg.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        @media (max-width: 640px) {
+
+            html,
+            body {
+                /* On mobile, rotate the bg image 90deg (clockwise) using a pseudo element */
+                background-image: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%);
+                position: relative;
+            }
+
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: -1;
+                background: url('/bg.png') no-repeat center center;
+                background-size: cover;
+                transform: rotate(90deg);
+                /* Ensure image covers whole body even after rotate */
+                width: 100vw;
+                height: 100vh;
+                display: block;
+            }
         }
 
         .form-section {
