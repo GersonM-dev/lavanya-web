@@ -19,22 +19,18 @@
         html,
         body {
             font-family: 'Cinzel', serif;
-            background: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%);
             min-height: 100vh;
-            /* Add wallpaper as a centered, covered background */
-            background-image: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%), url('images/bg.png');
-            background-repeat: no-repeat;
+            /* Use only the wallpaper image */
+            background: url('/bg.png') no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
         }
 
         @media (max-width: 640px) {
 
             html,
             body {
-                /* On mobile, rotate the bg image 90deg (clockwise) using a pseudo element */
-                background-image: linear-gradient(135deg, #fef9c3 0%, #fafaf9 100%);
+                background: none !important;
+                /* Remove bg from main body */
                 position: relative;
             }
 
@@ -46,10 +42,9 @@
                 right: 0;
                 bottom: 0;
                 z-index: -1;
-                background: url('images/bg.png') no-repeat center center;
+                background: url('/bg.png') no-repeat center center;
                 background-size: cover;
                 transform: rotate(90deg);
-                /* Ensure image covers whole body even after rotate */
                 width: 100vw;
                 height: 100vh;
                 display: block;
