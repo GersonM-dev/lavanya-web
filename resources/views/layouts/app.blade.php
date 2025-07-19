@@ -21,7 +21,7 @@
             font-family: 'Cinzel', serif;
             min-height: 100vh;
             /* Use only the wallpaper image */
-            background: url('/bg.png') no-repeat center center fixed;
+            background: url('/images/bg.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -42,7 +42,7 @@
                 right: 0;
                 bottom: 0;
                 z-index: -1;
-                background: url('/bg.png') no-repeat center center;
+                background: url('/images/bg.png') no-repeat center center;
                 background-size: cover;
                 transform: rotate(90deg);
                 width: 100vw;
