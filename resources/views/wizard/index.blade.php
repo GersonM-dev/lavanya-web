@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-yellow-100 to-white">
+    <div class="min-h-screen flex flex-col items-center justify-center">
         <div class="w-full max-w-xl">
 
             <!-- 0. LANDING PAGE -->
