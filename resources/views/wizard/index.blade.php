@@ -515,6 +515,7 @@
                     window.currentVendorCategoryIndex++;
                     if (window.currentVendorCategoryIndex < window.wizard.vendor_categories.length) {
                         fetchVendorsForCurrentCategory();
+                        window.scrollTo({ top: 0 }); // <-- add this line
                     } else {
                         animateSectionTransition('step-discount', 'left');
                         fetchDiscounts();
@@ -527,6 +528,7 @@
                     animateVendorsContent('right', function () {
                         window.currentVendorCategoryIndex--;
                         fetchVendorsForCurrentCategory();
+                        window.scrollTo({ top: 0 }); // <-- add this line
                     });
                 } else {
                     animateSectionTransition('step-catering', 'right');
