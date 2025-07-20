@@ -111,11 +111,11 @@
 <body class="antialiased font-sans text-gray-800">
 
     <div x-data="wizard()" x-cloak class="flex items-center justify-center min-h-screen p-4">
-        <div class="w-full max-w-4xl relative" style="min-height: 600px;">
+        <div class="w-full max-w-4xl relative" style="min-height: 600px; margin-bottom: 400px;">
             <!-- Step 1: Landing -->
             <div x-show="step === 1" class="text-center step-card p-8" x-transition:enter="slide-in-right"
                 x-transition:leave="slide-out-left">
-                <img src="{{ asset('images/logo.jpg') }}" alt="Lavanya Logo" class="mx-auto max-w-sm">
+                <img src="{{ asset('images/logo.jpg') }}" alt="Lavanya Logo" class="mx-auto w-full max-w-xs sm:max-w-sm h-auto">
                 <p class="text-lg text-gray-500 mb-2">Let's create your unforgettable day, step by step.</p>
                 <button @click="nextStep()"
                     class="bg-amber-400 text-black font-semibold py-3 px-8 rounded-full hover:bg-amber-500 transition-all duration-300 shadow-lg">
