@@ -17,7 +17,7 @@ class WizardController extends Controller
 {
     public function index(Referral $referral = null)
     {
-        return view('wizard.index', ['referral' => $referral]);
+        return view('wizard.index2', ['referral' => $referral]);
     }
     // 1. Get venue types (for first step)
     public function venueTypes()
@@ -174,6 +174,7 @@ class WizardController extends Controller
                 'gubugan_price' => $c->gubugan_price,
                 'dessert_price' => $c->dessert_price,
                 'base_price' => $c->base_price,
+                'description' => $c->deskripsi,
                 'portofolio_link' => $c->portofolio_link, // <-- Add this line!
             ];
         });

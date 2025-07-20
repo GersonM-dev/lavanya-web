@@ -53,17 +53,45 @@
         }
 
         .form-section {
-            display: none !important;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            /* height: 100%; */ /* REMOVED to allow dynamic height */
+            background: white;
+            /* Ensure sections have a background to cover content below */
+            border-radius: 0.5rem;
+            /* Re-apply from removed bg-white rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            /* Re-apply from removed shadow-lg */
+            padding: 1.5rem;
+            /* Re-apply from removed p-6 */
+            transform: translateX(100%);
             opacity: 0;
-            transform: translateY(32px);
-            transition: opacity 0.5s, transform 0.5s;
+            visibility: hidden;
+            transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+            z-index: 1;
+        }
+
+        .form-section.left-out {
+            transform: translateX(-100%);
         }
 
         .form-section.active {
-            display: block !important;
+            transform: translateX(0);
             opacity: 1;
-            transform: translateY(0);
-            z-index: 1;
+            visibility: visible;
+            z-index: 10;
+            /* Active step is on top */
+        }
+
+        .form-section.previous {
+            transform: translateX(0);
+            /* Keep previous step in place */
+            opacity: 1;
+            visibility: visible;
+            z-index: 5;
+            /* Behind the active step */
         }
 
         #detail-modal.show {

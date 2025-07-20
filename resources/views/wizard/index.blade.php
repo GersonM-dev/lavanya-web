@@ -139,20 +139,6 @@
 
 @push('styles')
     <style>
-        .form-section {
-            display: none !important;
-            opacity: 0;
-            transform: translateY(32px);
-            transition: opacity 0.5s, transform 0.5s;
-        }
-
-        .form-section.active {
-            display: block !important;
-            opacity: 1;
-            transform: translateY(0);
-            z-index: 1;
-        }
-
         .max-w-xl {
             position: relative;
             min-height: 700px;
@@ -205,11 +191,33 @@
         window.currentVendorCategoryIndex = 0;
         let currentSectionId = null;
 
-        function animateSectionTransition(nextSectionId) {
-            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(nextSectionId).classList.add('active');
+        function animateSectionTransition(nextSectionId, direction = 'left') {
+            const currentSection = currentSectionId ? document.getElementById(currentSectionId) : null;
+            const nextSection = document.getElementById(nextSectionId);
+
+            if (currentSection) {
+                currentSection.classList.add('previous');
+                // Add direction-based class for exit animation
+                if (direction === 'left') {
+                    currentSection.classList.add('left-out');
+                }
+            }
+
+            // Make next section ready for transition
+            nextSection.classList.remove('previous', 'left-out');
+            nextSection.classList.add('active');
+
+            // Clean up previous sections after transition
+            setTimeout(() => {
+                document.querySelectorAll('.form-section.previous').forEach(s => {
+                    if (s.id !== nextSectionId) {
+                        s.classList.remove('active', 'previous', 'left-out');
+                    }
+                });
+            }, 600); // Match CSS transition duration
+
             currentSectionId = nextSectionId;
-            window.scrollTo({ top: 0 });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function animateVendorsContent(_, callback) {
