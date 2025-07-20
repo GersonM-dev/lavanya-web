@@ -339,6 +339,10 @@
                 </div>
             </div>
 
+            <footer class="text-center text-sm py-4 text-gray-400 border-t mt-4 border-gray-100 bg-white">
+                &copy; {{ date('Y') }} Lavanya Wedding Organizer
+            </footer>
+
         </div>
 
         <!-- Modal -->
@@ -370,11 +374,6 @@
                 </div>
             </div>
         </div>
-
-        <footer class="text-center text-sm py-4 text-gray-400 border-t mt-4 border-gray-100 bg-white">
-            &copy; {{ date('Y') }} Lavanya Wedding Organizer
-        </footer>
-
     </div>
     <script>
         const VENDOR_STEP_START = 6;
