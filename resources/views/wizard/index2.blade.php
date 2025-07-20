@@ -111,7 +111,7 @@
 <body class="antialiased font-sans text-gray-800">
 
     <div x-data="wizard()" x-cloak class="flex items-center justify-center min-h-screen p-4">
-        <div class="w-full max-w-4xl relative" style="min-height: 400px;">
+        <div class="w-full max-w-4xl relative pb-8" style="min-height: 400px;">
             <!-- Step 1: Landing -->
             <div x-show="step === 1" class="text-center step-card p-8" x-transition:enter="slide-in-right"
                 x-transition:leave="slide-out-left">
