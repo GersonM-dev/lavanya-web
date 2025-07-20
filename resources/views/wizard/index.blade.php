@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="min-h-screen flex flex-col items-center justify-center">
-        <div class="w-full max-w-xl wizard-container">
+        <div class="w-full max-w-xl">
 
             <!-- 0. LANDING PAGE -->
             <div id="step-landing" class="form-section active flex flex-col items-center p-6">
@@ -139,76 +139,23 @@
 
 @push('styles')
     <style>
-        .wizard-container {
-            position: relative;
-            overflow: hidden;
-            min-height: 700px;
-        }
-
         .form-section {
             display: none !important;
             opacity: 0;
-            transform: translateX(100%);
-            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
+            transform: translateY(32px);
+            transition: opacity 0.5s, transform 0.5s;
         }
 
         .form-section.active {
             display: block !important;
             opacity: 1;
-            transform: translateX(0);
+            transform: translateY(0);
             z-index: 1;
+        }
+
+        .max-w-xl {
             position: relative;
-        }
-
-        .form-section.slide-out-left {
-            transform: translateX(-100%);
-            opacity: 0;
-        }
-
-        .form-section.slide-out-right {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-
-        .form-section.slide-in-left {
-            transform: translateX(-100%);
-            opacity: 0;
-        }
-
-        .form-section.slide-in-right {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-
-        /* Landing page active styles */
-        #step-landing.active {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        /* Vendors animation styles */
-        #vendors-anim-wrapper {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-
-        #vendors-anim-wrapper.vendors-slide-out {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-
-        #vendors-anim-wrapper.vendors-slide-in {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-
-        #vendors-anim-wrapper.vendors-active {
-            opacity: 1;
-            transform: translateX(0);
+            min-height: 700px;
         }
 
         #detail-modal {
@@ -258,60 +205,15 @@
         window.currentVendorCategoryIndex = 0;
         let currentSectionId = null;
 
-        function animateSectionTransition(nextSectionId, direction = 'right') {
-            const currentSection = document.querySelector('.form-section.active');
-            const nextSection = document.getElementById(nextSectionId);
-            
-            if (!nextSection) return;
-            
-            const isGoingForward = direction === 'left'; // left means going forward (next)
-            
-            if (currentSection) {
-                // Slide current section out
-                currentSection.classList.add(isGoingForward ? 'slide-out-left' : 'slide-out-right');
-                
-                // After animation completes, hide current section
-                setTimeout(() => {
-                    currentSection.classList.remove('active', 'slide-out-left', 'slide-out-right');
-                    currentSection.style.display = 'none';
-                }, 400);
-            }
-            
-            // Prepare next section for sliding in
-            nextSection.style.display = 'block';
-            nextSection.classList.add(isGoingForward ? 'slide-in-right' : 'slide-in-left');
-            
-            // Small delay to ensure display is applied
-            setTimeout(() => {
-                nextSection.classList.remove('slide-in-left', 'slide-in-right');
-                nextSection.classList.add('active');
-            }, 10);
-            
+        function animateSectionTransition(nextSectionId) {
+            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(nextSectionId).classList.add('active');
             currentSectionId = nextSectionId;
             window.scrollTo({ top: 0 });
         }
 
-        function animateVendorsContent(direction, callback) {
-            const wrapper = document.getElementById('vendors-anim-wrapper');
-            
-            // Add slide out animation
-            wrapper.classList.remove('vendors-active');
-            wrapper.classList.add(direction === 'left' ? 'vendors-slide-out' : 'vendors-slide-out');
-            
-            setTimeout(() => {
-                if (typeof callback === 'function') {
-                    callback();
-                }
-                
-                // Add slide in animation
-                wrapper.classList.remove('vendors-slide-out');
-                wrapper.classList.add('vendors-slide-in');
-                
-                setTimeout(() => {
-                    wrapper.classList.remove('vendors-slide-in');
-                    wrapper.classList.add('vendors-active');
-                }, 50);
-            }, 300);
+        function animateVendorsContent(_, callback) {
+            if (typeof callback === 'function') callback();
         }
 
         function fetchVenueTypes() {
@@ -568,14 +470,33 @@
         document.getElementById('detail-modal-backdrop').onclick = closeDetailModal;
 
         document.addEventListener('DOMContentLoaded', function () {
-            // Set initial state without animation
-            currentSectionId = 'step-landing';
+            animateSectionTransition('step-landing');
 
             document.getElementById('start-wizard-btn').onclick = function () {
                 animateSectionTransition('step-customer', 'left');
             };
 
-            // All your existing event handlers with updated direction parameters
+            // Customer Info: Next
+            document.getElementById('customer-form').onsubmit = function (e) {
+                e.preventDefault();
+                const data = {
+                    grooms_name: document.querySelector('[name="grooms_name"]').value,
+                    brides_name: document.querySelector('[name="brides_name"]').value,
+                    guest_count: parseInt(document.querySelector('[name="guest_count"]').value),
+                    wedding_date: document.querySelector('[name="wedding_date"]').value,
+                    refferal_code: document.querySelector('[name="refferal_code"]').value,
+                    phone_number: document.querySelector('[name="phone_number"]').value,
+                };
+                if (!data.grooms_name || !data.brides_name || !data.guest_count || !data.wedding_date || !data.phone_number) {
+                    alert('Mohon lengkapi data pengantin.');
+                    return false;
+                }
+                window.wizard.customer = data;
+                animateSectionTransition('step-venue-type', 'left');
+                fetchVenueTypes();
+                return false;
+            };
+            // Venue Type: Back/Next
             document.querySelector('#step-venue-type .back-btn').onclick = () => animateSectionTransition('step-customer', 'right');
             document.querySelector('#step-venue-type .next-btn').onclick = function () {
                 animateSectionTransition('step-venue', 'left');
