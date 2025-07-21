@@ -136,7 +136,7 @@
                     <input type="number" x-model.number="form.customer.guest_count" placeholder="Number of Guests"
                         class="p-3 border rounded-lg w-full">
                     <input type="date" x-model="form.customer.wedding_date" class="p-3 border rounded-lg w-full">
-                    <input type="text" x-model="form.customer.refferal_code" placeholder="Referral Code (optional)"
+                    <input type="text" x-model="form.customer.referral_code" placeholder="Referral Code (optional)"
                         class="p-3 border rounded-lg w-full" :readonly="!!initialReferralCode" />
                     <input type="tel" x-model="form.customer.phone_number" placeholder="WhatsApp Number (e.g. 0812...)"
                         class="p-3 border rounded-lg w-full">
@@ -392,7 +392,7 @@
                         guest_count: null,
                         wedding_date: '',
                         phone_number: '',
-                        refferal_code: @json($referral->referral_code ?? ''),
+                        referral_code: @json($referral->referral_code ?? ''),
                     },
                     venue_type: '',
                     venue_id: null,
@@ -420,7 +420,7 @@
                 },
 
                 init() {
-                    this.initialReferralCode = this.form.customer.refferal_code
+                    this.initialReferralCode = this.form.customer.referral_code
                     this.fetchVenueTypes();
                     const today = new Date();
                     const yyyy = today.getFullYear();
