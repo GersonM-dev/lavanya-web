@@ -80,30 +80,23 @@ class WizardController extends Controller
     {
         $venueId = $request->query('venue_id');
         $referralCode = $request->query('referral_code');
-        $referralId = $referralCode
-            ? Referral::where('referral_code', $referralCode)->value('id')
-            : null;
 
-        // Does this referral actually have *any* vendors?
-        $hasVendorReferrals = $referralId
-            && DB::table('referral_vendor')
-                ->where('referral_id', $referralId)
-                ->exists();
-
-        $categories = VendorCategories::whereHas('vendors', function ($q) use ($venueId, $hasVendorReferrals, $referralId) {
+        $categories = VendorCategories::whereHas('vendors', function ($q) use ($venueId, $referralCode) {
             $q->where('is_active', 1)
-                ->where(function ($qq) use ($venueId) {
-                    $qq->whereHas('venues', fn($qqq) => $qqq->where('venues.id', $venueId))
+                ->where(function ($q2) use ($venueId) {
+                    $q2->whereHas('venues', fn($q3) => $q3->where('venues.id', $venueId))
                         ->orWhere('is_all_venue', true);
                 });
 
-            if ($hasVendorReferrals) {
-                // only those vendors tied to this referral
-                $q->whereHas('referrals', fn($qr) => $qr->where('referrals.id', $referralId));
+            if ($referralCode) {
+                $q->whereHas('referrals', fn($qr) => $qr->where('referrals.referral_code', $referralCode));
             }
-        })
-            ->get()
-            ->map(/* … */);
+        })->get()->map(function ($cat) {
+            return [
+                'id' => $cat->id,
+                'name' => $cat->name,
+            ];
+        });
 
         return response()->json(['categories' => $categories]);
     }
@@ -113,14 +106,11 @@ class WizardController extends Controller
         $categoryId = $request->query('category_id');
         $venueId = $request->query('venue_id');
         $referralCode = $request->query('referral_code');
-        $referralId = $referralCode
-            ? Referral::where('referral_code', $referralCode)->value('id')
-            : null;
 
-        $hasVendorReferrals = $referralId
-            && DB::table('referral_vendor')
-                ->where('referral_id', $referralId)
-                ->exists();
+        $referralId = null;
+        if ($referralCode) {
+            $referralId = \App\Models\Referral::where('referral_code', $referralCode)->value('id');
+        }
 
         $vendorsQuery = Vendor::where('vendor_category_id', $categoryId)
             ->where('is_active', 1)
@@ -129,15 +119,24 @@ class WizardController extends Controller
                     ->orWhere('is_all_venue', true);
             });
 
-        if ($hasVendorReferrals) {
-            $vendorsQuery->whereHas(
-                'referrals',
-                fn($q) =>
-                $q->where('referrals.id', $referralId)
-            );
+        if ($referralId) {
+            $vendorsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        } elseif ($referralCode) {
+            // Ada kode tapi tidak valid, kosongkan hasil
+            $vendorsQuery->whereRaw('0=1');
         }
 
-        $vendors = $vendorsQuery->get()->map(/* … */);
+        $vendors = $vendorsQuery->get()->map(function ($v) {
+            return [
+                'id' => $v->id,
+                'name' => $v->nama,
+                'image' => $v->image1 ? asset('storage/' . $v->image1) : asset('images/default-vendor.jpg'),
+                'price' => $v->harga,
+                'description' => $v->deskripsi,
+                'is_mandatory' => (bool) $v->is_mandatory,
+                'portofolio_link' => $v->portofolio_link, // <-- Add this line!
+            ];
+        });
 
         return response()->json(['vendors' => $vendors]);
     }
@@ -148,34 +147,37 @@ class WizardController extends Controller
         $venueId = $request->query('venue_id');
         $referralCode = $request->query('referral_code');
 
-        // Look up the referral
-        $referralId = $referralCode
-            ? Referral::where('referral_code', $referralCode)->value('id')
-            : null;
+        $referralId = null;
+        if ($referralCode) {
+            $referralId = \App\Models\Referral::where('referral_code', $referralCode)->value('id');
+        }
 
-        // Check if this referral really has any caterings assigned
-        $hasCateringReferrals = $referralId
-            && DB::table('referral_catering')
-                ->where('referral_id', $referralId)
-                ->exists();
-
-        // Base query: only active caterings for this venue (or all‑venue)
         $cateringsQuery = Catering::where('is_active', 1)
             ->where(function ($q) use ($venueId) {
                 $q->whereHas('venues', fn($qq) => $qq->where('venues.id', $venueId))
                     ->orWhere('is_all_venue', true);
             });
 
-        // Only if the referral actually has caterings, apply that extra filter
-        if ($hasCateringReferrals) {
-            $cateringsQuery->whereHas(
-                'referrals',
-                fn($q) =>
-                $q->where('referrals.id', $referralId)
-            );
+        if ($referralId) {
+            $cateringsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
+        } elseif ($referralCode) {
+            $cateringsQuery->whereRaw('0=1');
         }
 
-        $caterings = $cateringsQuery->get()->map(/* … */);
+        $caterings = $cateringsQuery->get()->map(function ($c) {
+            return [
+                'id' => $c->id,
+                'name' => $c->nama,
+                'image' => $c->image1 ? asset('storage/' . $c->image1) : asset('images/default-catering.jpg'),
+                'type' => $c->type,
+                'buffet_price' => $c->buffet_price,
+                'gubugan_price' => $c->gubugan_price,
+                'dessert_price' => $c->dessert_price,
+                'base_price' => $c->base_price,
+                'description' => $c->deskripsi,
+                'portofolio_link' => $c->portofolio_link, // <-- Add this line!
+            ];
+        });
 
         return response()->json(['caterings' => $caterings]);
     }
