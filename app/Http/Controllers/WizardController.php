@@ -231,7 +231,6 @@ class WizardController extends Controller
             ])
         ]);
     }
-
     // public function storeTransaction(Request $request)
     // {
     //     // 1. Validation

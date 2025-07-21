@@ -490,7 +490,7 @@
                     const params = new URLSearchParams({
                         type: this.form.venue_type,
                         guest_count: this.form.customer.guest_count,
-                        referral_code: this.form.customer.refferal_code || ''
+                        referral_code: this.form.customer.referral_code || ''
                     });
                     const response = await fetch(`/api/wizard/venues?${params}`);
                     const data = await response.json();
@@ -502,7 +502,7 @@
                     this.loading.caterings = true;
                     const params = new URLSearchParams({
                         venue_id: this.form.venue_id,
-                        referral_code: this.form.customer.refferal_code || ''
+                        referral_code: this.form.customer.referral_code || ''
                     });
                     const response = await fetch(`/api/wizard/caterings?${params}`);
                     const data = await response.json();
@@ -514,7 +514,7 @@
                     this.loading.vendorCategories = true;
                     const params = new URLSearchParams({
                         venue_id: this.form.venue_id,
-                        referral_code: this.form.customer.refferal_code || ''
+                        referral_code: this.form.customer.referral_code || ''
                     });
                     const response = await fetch(`/api/wizard/vendor-categories?${params}`);
                     const data = await response.json();
@@ -531,7 +531,7 @@
                     const params = new URLSearchParams({
                         category_id: categoryId,
                         venue_id: this.form.venue_id,
-                        referral_code: this.form.customer.refferal_code || ''
+                        referral_code: this.form.customer.referral_code || ''
                     });
                     const response = await fetch(`/api/wizard/vendors?${params}`);
                     const data = await response.json();
