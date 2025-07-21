@@ -492,20 +492,11 @@
                         guest_count: this.form.customer.guest_count,
                         referral_code: this.form.customer.referral_code || ''
                     });
-                    try {
-                        const response = await fetch(`/api/wizard/venues?${params}`);
-                        if (!response.ok) {
-                            // Could log error or display user message here
-                            throw new Error("Network response was not ok");
-                        }
-                        const data = await response.json();
-                        this.venues = data.venues;
-                    } catch (e) {
-                        this.venues = []; // or show error message to user
-                        console.error('Fetch venues failed:', e);
-                    }
+                    const response = await fetch(`/api/wizard/venues?${params}`);
+                    const data = await response.json();
+                    this.venues = data.venues;
                     this.loading.venues = false;
-                }
+                },
                 async fetchCaterings() {
                     if (!this.form.venue_id) return;
                     this.loading.caterings = true;
