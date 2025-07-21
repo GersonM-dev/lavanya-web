@@ -137,7 +137,7 @@
                         class="p-3 border rounded-lg w-full">
                     <input type="date" x-model="form.customer.wedding_date" class="p-3 border rounded-lg w-full">
                     <input type="text" x-model="form.customer.refferal_code" placeholder="Referral Code (optional)"
-                        class="p-3 border rounded-lg w-full" :readonly="!!form.customer.refferal_code" />
+                        class="p-3 border rounded-lg w-full" :readonly="!!initialReferralCode" />
                     <input type="tel" x-model="form.customer.phone_number" placeholder="WhatsApp Number (e.g. 0812...)"
                         class="p-3 border rounded-lg w-full">
                 </div>
@@ -392,7 +392,7 @@
                         guest_count: null,
                         wedding_date: '',
                         phone_number: '',
-                        refferal_code: @json($referral->referral_code ?? null)
+                        refferal_code: @json($referral->referral_code ?? ''),
                     },
                     venue_type: '',
                     venue_id: null,
@@ -409,6 +409,7 @@
                 visitedVendorCategories: [], // <— NEW
                 vendors: {}, // { category_id: [vendor1, vendor2] }
                 discounts: [],
+                initialReferralCode: '',
 
                 loading: {
                     venues: false,
@@ -419,6 +420,7 @@
                 },
 
                 init() {
+                    this.initialReferralCode = this.form.customer.refferal_code
                     this.fetchVenueTypes();
                     const today = new Date();
                     const yyyy = today.getFullYear();
