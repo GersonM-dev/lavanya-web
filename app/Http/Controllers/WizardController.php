@@ -158,6 +158,7 @@ class WizardController extends Controller
                     ->orWhere('is_all_venue', true);
             });
 
+        // Now this makes sense!
         if ($referralId) {
             $cateringsQuery->whereHas('referrals', fn($q) => $q->where('referrals.id', $referralId));
         } elseif ($referralCode) {
@@ -175,12 +176,13 @@ class WizardController extends Controller
                 'dessert_price' => $c->dessert_price,
                 'base_price' => $c->base_price,
                 'description' => $c->deskripsi,
-                'portofolio_link' => $c->portofolio_link, // <-- Add this line!
+                'portofolio_link' => $c->portofolio_link,
             ];
         });
 
         return response()->json(['caterings' => $caterings]);
     }
+
     // 6. Get eligible discounts
     public function discounts(Request $request)
     {
