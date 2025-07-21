@@ -36,7 +36,7 @@ class WizardController extends Controller
     {
         $type = $request->query('type');
         $guestCount = $request->query('guest_count');
-        $referralCode = $request->query('referral_id'); // <-- dari frontend
+        $referralCode = $request->query('referral_code');
 
         $venuesQuery = Venue::where('type', $type)
             ->where('is_active', 1);
@@ -359,7 +359,7 @@ class WizardController extends Controller
             'customer.guest_count' => 'required|integer|min:1',
             'customer.wedding_date' => 'required|date|after_or_equal:today',
             'customer.phone_number' => 'required|string|max:20',
-            'customer.refferal_code' => 'nullable|string|max:50',
+            'customer.referral_code' => 'nullable|string|max:50',
             'venue_id' => 'required|exists:venues,id',
             'catering_id' => 'required|exists:caterings,id',
             'vendors' => 'required|array|min:1',
