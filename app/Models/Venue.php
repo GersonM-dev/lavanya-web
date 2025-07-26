@@ -43,7 +43,13 @@ class Venue extends Model
 
     public function referrals()
     {
-        return $this->belongsToMany(Referral::class);
+        // name the table & FK columns explicitly so there’s no doubt
+        return $this->belongsToMany(
+            Referral::class,   // related model
+            'referral_venue',  // pivot table
+            'venue_id',        // FK pointing *to this* model
+            'referral_id'      // FK pointing to the related model
+        )->withTimestamps();
     }
 
 }
