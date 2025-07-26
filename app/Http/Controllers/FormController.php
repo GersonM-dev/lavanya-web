@@ -35,35 +35,40 @@ class FormController extends Controller
 
     public function getVenue(Request $request)
     {
-        $venues = Venue::query()
-
+        $query = Venue::query()
             ->when($request->query('type'), function ($q, $type) {
                 $q->where('type', $type);
             })
-
             ->when($request->query('guest_count'), function ($q, $count) {
                 $q->where('capacity', '>=', $count);
-            })
-
-            ->when($request->query('referral_code'), function ($q, $code) {
-                $q->whereHas('referrals', function ($ref) use ($code) {
-                    $ref->where('referral_code', $code);   // ← filter by column on `referrals`
-                });
-            })
-
-            ->get()->map(function ($venue) {
-                return [
-                    'id' => $venue->id,
-                    'name' => $venue->nama,
-                    'image' => $venue->image_url,
-                    'description' => $venue->deskripsi,
-                    'price' => $venue->harga,
-                    'portofolio_link' => $venue->portofolio_link,
-                ];
             });
+
+        // If referral_code is present, try filtering
+        if ($request->has('referral_code')) {
+            $referralCode = $request->query('referral_code');
+            $referralFiltered = (clone $query)->whereHas('referrals', function ($ref) use ($referralCode) {
+                $ref->where('referral_code', $referralCode);
+            });
+            if ($referralFiltered->count() > 0) {
+                $query = $referralFiltered;
+            }
+            // else: no venues for referral, fallback to original $query
+        }
+
+        $venues = $query->get()->map(function ($venue) {
+            return [
+                'id' => $venue->id,
+                'name' => $venue->nama,
+                'image' => $venue->image_url,
+                'description' => $venue->deskripsi,
+                'price' => $venue->harga,
+                'portofolio_link' => $venue->portofolio_link,
+            ];
+        });
 
         return response()->json(['venues' => $venues]);
     }
+
 
     public function getCaterings(Request $request)
     {
@@ -132,7 +137,7 @@ class FormController extends Controller
             'referral_code' => $referralCode,
         ]);
 
-        $vendors = \App\Models\Vendor::query()
+        $query = \App\Models\Vendor::query()
             ->where('is_active', 1)
             ->when($categoryId, function ($q, $categoryId) {
                 $q->where('vendor_category_id', $categoryId);
@@ -144,27 +149,36 @@ class FormController extends Controller
                             $v->where('venues.id', $venueId);
                         });
                 });
-            })
-            ->when($referralCode, function ($q, $code) {
-                $q->whereHas('referrals', function ($ref) use ($code) {
-                    $ref->where('referral_code', $code);
-                });
-            })
-            ->get()
-            ->map(function ($vendor) {
-                return [
-                    'id' => $vendor->id,
-                    'name' => $vendor->nama,
-                    'image' => $vendor->image1 ? asset('storage/' . $vendor->image1) : asset('images/default-vendor.jpg'),
-                    'description' => $vendor->deskripsi,
-                    'price' => $vendor->harga,
-                    'portofolio_link' => $vendor->portofolio_link,
-                    'is_mandatory' => !!$vendor->is_mandatory,
-                ];
             });
+
+        // If referral_code is set, filter first
+        $filtered = $query;
+        if ($referralCode) {
+            $filtered = (clone $query)->whereHas('referrals', function ($ref) use ($referralCode) {
+                $ref->where('referral_code', $referralCode);
+            });
+            // If there are vendors found for the referral code, use only those
+            if ($filtered->count() > 0) {
+                $query = $filtered;
+            }
+            // else: do NOT apply referral filter
+        }
+
+        $vendors = $query->get()->map(function ($vendor) {
+            return [
+                'id' => $vendor->id,
+                'name' => $vendor->nama,
+                'image' => $vendor->image1 ? asset('storage/' . $vendor->image1) : asset('images/default-vendor.jpg'),
+                'description' => $vendor->deskripsi,
+                'price' => $vendor->harga,
+                'portofolio_link' => $vendor->portofolio_link,
+                'is_mandatory' => !!$vendor->is_mandatory,
+            ];
+        });
 
         return response()->json(['vendors' => $vendors]);
     }
+
 
     public function getDiscounts(Request $request)
     {
