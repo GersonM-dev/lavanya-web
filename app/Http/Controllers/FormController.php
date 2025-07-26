@@ -67,37 +67,44 @@ class FormController extends Controller
 
     public function getCaterings(Request $request)
     {
-        $caterings = Catering::query()
+        $query = Catering::query();
 
-            ->when($request->query('venue_id'), function ($q, $venueId) {
-                $q->whereHas('venues', function ($v) use ($venueId) {
-                    $v->where('venue_id', $venueId);
-                });
-            })
-
-            ->when($request->query('referral_code'), function ($q, $code) {
-                $q->whereHas('referrals', function ($ref) use ($code) {
-                    $ref->where('referral_code', $code);   // ← filter by column on `referrals`
-                });
-            })
-
-            ->get()->map(function ($catering) {
-                return [
-                    'id' => $catering->id,
-                    'name' => $catering->nama,
-                    'image' => $catering->image1 ? asset('storage/' . $catering->image1) : asset('images/default-catering.jpg'),
-                    'type' => $catering->type,
-                    'buffet_price' => $catering->buffet_price,
-                    'gubugan_price' => $catering->gubugan_price,
-                    'dessert_price' => $catering->dessert_price,
-                    'base_price' => $catering->base_price,
-                    'description' => $catering->deskripsi,
-                    'portofolio_link' => $catering->portofolio_link,
-                ];
+        if ($request->has('venue_id')) {
+            $query->whereHas('venues', function ($v) use ($request) {
+                $v->where('venue_id', $request->query('venue_id'));
             });
+        }
+
+        if ($request->has('referral_code')) {
+            $referralCode = $request->query('referral_code');
+            // Try filtering by referral_code first
+            $referralFiltered = (clone $query)->whereHas('referrals', function ($ref) use ($referralCode) {
+                $ref->where('referral_code', $referralCode);
+            });
+            if ($referralFiltered->count() > 0) {
+                $query = $referralFiltered;
+            }
+            // else: do NOT apply referral_code filter
+        }
+
+        $caterings = $query->get()->map(function ($catering) {
+            return [
+                'id' => $catering->id,
+                'name' => $catering->nama,
+                'image' => $catering->image1 ? asset('storage/' . $catering->image1) : asset('images/default-catering.jpg'),
+                'type' => $catering->type,
+                'buffet_price' => $catering->buffet_price,
+                'gubugan_price' => $catering->gubugan_price,
+                'dessert_price' => $catering->dessert_price,
+                'base_price' => $catering->base_price,
+                'description' => $catering->deskripsi,
+                'portofolio_link' => $catering->portofolio_link,
+            ];
+        });
 
         return response()->json(['caterings' => $caterings]);
     }
+
 
     public function getVendorCategories(Request $request)
     {
