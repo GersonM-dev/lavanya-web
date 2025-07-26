@@ -9,7 +9,7 @@ use App\Models\Referral;
 use App\Models\Transaction;
 use App\Models\Discount;
 use App\Models\Venue;
-use App\Models\VendorCategory;
+use App\Models\VendorCategories;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -101,12 +101,12 @@ class FormController extends Controller
 
     public function getVendorCategories(Request $request)
     {
-        $vendorCategories = VendorCategory::all()
+        $vendorCategories = VendorCategories::all()
 
             ->map(function ($category) {
                 return [
                     'id' => $category->id,
-                    'name' => $category->nama,
+                    'name' => $category->name,
                 ];
             });
 
@@ -115,21 +115,36 @@ class FormController extends Controller
 
     public function getVendors(Request $request)
     {
-        $vendors = Vendor::query()
-            ->when($request->query('referral_code'), function ($q, $code) {
-                $q->whereHas('referrals', function ($ref) use ($code) {
-                    $ref->where('referral_code', $code);   // ← filter by column on `referrals`
-                });
-            })
-            ->when($request->query('venue_id'), function ($q, $venueId) {
-                $q->whereHas('venues', function ($v) use ($venueId) {
-                    $v->where('venue_id', $venueId);
-                });
-            })
-            ->when($request->query('category_id'), function ($q, $categoryId) {
+        $categoryId = $request->query('category_id');
+        $venueId = $request->query('venue_id');
+        $referralCode = $request->query('referral_code');
+
+        Log::info('getVendors API called', [
+            'venue_id' => $venueId,
+            'category_id' => $categoryId,
+            'referral_code' => $referralCode,
+        ]);
+
+        $vendors = \App\Models\Vendor::query()
+            ->where('is_active', 1)
+            ->when($categoryId, function ($q, $categoryId) {
                 $q->where('vendor_category_id', $categoryId);
             })
-            ->get()->map(function ($vendor) {
+            ->when($venueId, function ($q, $venueId) {
+                $q->where(function ($q2) use ($venueId) {
+                    $q2->where('is_all_venue', 1)
+                        ->orWhereHas('venues', function ($v) use ($venueId) {
+                            $v->where('venues.id', $venueId);
+                        });
+                });
+            })
+            ->when($referralCode, function ($q, $code) {
+                $q->whereHas('referrals', function ($ref) use ($code) {
+                    $ref->where('referral_code', $code);
+                });
+            })
+            ->get()
+            ->map(function ($vendor) {
                 return [
                     'id' => $vendor->id,
                     'name' => $vendor->nama,
@@ -137,8 +152,10 @@ class FormController extends Controller
                     'description' => $vendor->deskripsi,
                     'price' => $vendor->harga,
                     'portofolio_link' => $vendor->portofolio_link,
+                    'is_mandatory' => !!$vendor->is_mandatory,
                 ];
             });
+
         return response()->json(['vendors' => $vendors]);
     }
 
@@ -178,7 +195,7 @@ class FormController extends Controller
             'customer.guest_count' => 'required|integer|min:1',
             'customer.wedding_date' => 'required|date|after_or_equal:today',
             'customer.phone_number' => 'required|string|max:20',
-            'customer.referral_code' => 'nullable|string|max:50',
+            'customer.refferal_code' => 'nullable|string|max:50',
 
             'venue_id' => 'required|exists:venues,id',
             'catering_id' => 'required|exists:caterings,id',
@@ -331,7 +348,11 @@ class FormController extends Controller
 
     private function generateRecapLink(Transaction $tx, Customer $c): void
     {
-        $base = Str::slug($c->grooms_name) . '-' . $c->wedding_date->format('Ymd');
+        $date = $c->wedding_date instanceof \Carbon\Carbon
+            ? $c->wedding_date
+            : \Carbon\Carbon::parse($c->wedding_date);
+
+        $base = Str::slug($c->grooms_name) . '-' . $date->format('Ymd');
         $slug = $base;
         $suffix = 1;
 
@@ -362,7 +383,7 @@ class FormController extends Controller
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_POST => true,
                 CURLOPT_POSTFIELDS => [
-                    'target' => '085183116822',
+                    'target' => '085156106221',
                     'message' => $msg,
                     'countryCode' => '62',
                 ],

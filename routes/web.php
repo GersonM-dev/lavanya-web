@@ -4,6 +4,7 @@ use App\Livewire\WeddingOrderForm;
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\WizardController;
 use App\Http\Controllers\TransactionFormController;
 
@@ -28,3 +29,6 @@ Route::get('/{referral:slug?}', [WizardController::class, 'index']);
 
 // Recap page (make sure this is *after* any other conflicting routes!)
 Route::get('recap/{recap_link}', [WizardController::class, 'showRecap'])->name('wizard.recap');
+
+Route::get('/form/{referral?}', [FormController::class, 'index'])
+    ->name('form.index');
