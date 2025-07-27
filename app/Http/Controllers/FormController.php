@@ -109,7 +109,6 @@ class FormController extends Controller
         return response()->json(['caterings' => $caterings]);
     }
 
-
     public function getVendorCategories(Request $request)
     {
         $vendorCategories = VendorCategories::all()
