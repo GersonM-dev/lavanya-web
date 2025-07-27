@@ -14,21 +14,5 @@ use App\Http\Controllers\TransactionFormController;
 
 Route::get('/wizard/recap/{transaction}', [WizardController::class, 'downloadRecapPdf'])->name('wizard.recap.pdf');
 
-Route::prefix('api/wizard')->group(function () {
-    Route::get('venue-types', [WizardController::class, 'venueTypes']);
-    Route::get('venues', [WizardController::class, 'venues']);
-    Route::get('vendor-categories', [WizardController::class, 'vendorCategories']);
-    Route::get('vendors', [WizardController::class, 'vendors']);
-    Route::get('caterings', [WizardController::class, 'caterings']);
-    Route::post('discounts', [WizardController::class, 'discounts']); // Use POST if sending a list of IDs
-    Route::post('store', [WizardController::class, 'storeTransaction']);
-});
-
-
-Route::get('/{referral:slug?}', [WizardController::class, 'index']);
-
 // Recap page (make sure this is *after* any other conflicting routes!)
 Route::get('recap/{recap_link}', [WizardController::class, 'showRecap'])->name('wizard.recap');
-
-Route::get('/form/{referral?}', [FormController::class, 'index'])
-    ->name('form.index');
