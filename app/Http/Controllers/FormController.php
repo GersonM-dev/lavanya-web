@@ -35,24 +35,22 @@ class FormController extends Controller
 
     public function getVenue(Request $request)
     {
-        $query = Venue::query()
-            ->when($request->query('type'), function ($q, $type) {
-                $q->where('type', $type);
-            })
-            ->when($request->query('guest_count'), function ($q, $count) {
-                $q->where('capacity', '>=', $count);
-            });
+        $query = Venue::query();
 
-        // If referral_code is present, try filtering
+        // If referral_code is present, always restrict to that referral's venues
         if ($request->has('referral_code')) {
             $referralCode = $request->query('referral_code');
-            $referralFiltered = (clone $query)->whereHas('referrals', function ($ref) use ($referralCode) {
+            $query->whereHas('referrals', function ($ref) use ($referralCode) {
                 $ref->where('referral_code', $referralCode);
             });
-            if ($referralFiltered->count() > 0) {
-                $query = $referralFiltered;
-            }
-            // else: no venues for referral, fallback to original $query
+        }
+
+        // Always apply type and guest_count if present
+        if ($request->has('type')) {
+            $query->where('type', $request->query('type'));
+        }
+        if ($request->has('guest_count')) {
+            $query->where('capacity', '>=', $request->query('guest_count'));
         }
 
         $venues = $query->get()->map(function ($venue) {
@@ -68,6 +66,7 @@ class FormController extends Controller
 
         return response()->json(['venues' => $venues]);
     }
+
 
 
     public function getCaterings(Request $request)
