@@ -39,22 +39,15 @@ class FormController extends Controller
 
         if ($request->filled('referral_code')) {
             $referralCode = $request->query('referral_code');
-            // Check if referral exists first:
             $referralExists = \App\Models\Referral::where('referral_code', $referralCode)->exists();
-            if (!$referralExists) {
-                return response()->json([
-                    'error' => true,
-                    'message' => 'Referral code not found.',
-                    'venues' => [],
-                ], 404);
+            if ($referralExists) {
+                $query->whereHas('referrals', function ($ref) use ($referralCode) {
+                    $ref->where('referral_code', $referralCode);
+                });
             }
-            // Only filter if referral exists:
-            $query->whereHas('referrals', function ($ref) use ($referralCode) {
-                $ref->where('referral_code', $referralCode);
-            });
+            // else: Do nothing, don't filter, just continue with other filters
         }
 
-        // Continue as usual...
         if ($request->has('type')) {
             $query->where('type', $request->query('type'));
         }
@@ -75,9 +68,6 @@ class FormController extends Controller
 
         return response()->json(['venues' => $venues]);
     }
-
-
-
 
     public function getCaterings(Request $request)
     {
