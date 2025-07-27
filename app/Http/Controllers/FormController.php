@@ -37,16 +37,24 @@ class FormController extends Controller
     {
         $query = Venue::query();
 
-        // If referral_code is present, always restrict to that referral's venues
         if ($request->filled('referral_code')) {
             $referralCode = $request->query('referral_code');
+            // Check if referral exists first:
+            $referralExists = \App\Models\Referral::where('referral_code', $referralCode)->exists();
+            if (!$referralExists) {
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Referral code not found.',
+                    'venues' => [],
+                ], 404);
+            }
+            // Only filter if referral exists:
             $query->whereHas('referrals', function ($ref) use ($referralCode) {
                 $ref->where('referral_code', $referralCode);
             });
         }
 
-
-        // Always apply type and guest_count if present
+        // Continue as usual...
         if ($request->has('type')) {
             $query->where('type', $request->query('type'));
         }
@@ -67,6 +75,7 @@ class FormController extends Controller
 
         return response()->json(['venues' => $venues]);
     }
+
 
 
 
