@@ -123,7 +123,7 @@
         <!-- Header -->
         <div class="header">
             <h1>Recap Wedding Plan</h1>
-            <div class="desc">Lavanya Java Heritage</div>
+            <div class="desc">LAVANYA ENTERPRISE</div>
             <div class="thanks">Terima kasih telah mempercayakan momen spesial Anda kepada kami.</div>
         </div>
 

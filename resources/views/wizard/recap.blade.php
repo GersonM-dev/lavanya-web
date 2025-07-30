@@ -11,7 +11,7 @@
             <!-- Header -->
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-extrabold text-amber-800 mb-2 tracking-tight">Recap Wedding Plan</h1>
-                <p class="text-base text-gray-500">Lavanya Java Heritage</p>
+                <p class="text-base text-gray-500">LAVANYA ENTERPRISE</p>
                 <p class="text-md text-amber-600 mt-2">Terima kasih telah mempercayakan momen spesial Anda kepada kami.</p>
             </div>
 
