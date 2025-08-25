@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use App\Jobs\FollowUpWeddingJob;
 
 class FormController extends Controller
 {
@@ -322,6 +323,8 @@ class FormController extends Controller
 
         /* ---------- WhatsApp notification (non‑blocking) ---------- */
         $this->notifyViaWhatsapp($request->input('customer'), $transaction->id);
+
+        FollowUpWeddingJob::dispatch($transaction->id);
 
         /* ---------- Response ---------- */
         return response()->json([
