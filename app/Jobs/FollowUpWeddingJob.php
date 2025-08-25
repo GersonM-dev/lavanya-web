@@ -73,10 +73,10 @@ class FollowUpWeddingJob implements ShouldQueue
 
         // Susun pesan follow‑up
         $msg = "Halo {$customer->grooms_name} & {$customer->brides_name},\n"
-            . "Kami belum menerima update pembayaran untuk pesanan pernikahan Anda.\n"
+            . "Bagaimana Kabarnya? kami dari Lavanya Wedding Organizer ingin mengkonfirmasi kembali rencana pernikahan Anda pada :.\n"
             . "Tanggal: {$customer->wedding_date}\n"
             . "Jumlah Tamu: {$customer->guest_count}\n"
-            . "Mohon konfirmasi pembayaran atau hubungi admin jika ada pertanyaan.\n"
+            . "Mohon konfirmasi kembali ya Kak, apabila ada pertanyaan bisa langsung tanyakan pada kami di nomor ini.\n"
             . "Terima kasih!";
 
         // Kirim pesan via Fonnte API
